@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.TeleOp.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.TeleOp.subsystems.Drive;
+import org.firstinspires.ftc.teamcode.subsystems.Drive;
 
 @TeleOp(name="DriveTest", group="TeleOpMode")
 public class DriveTest extends LinearOpMode {

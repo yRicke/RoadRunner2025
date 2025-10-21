@@ -2,9 +2,9 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.TeleOp.subsystems.Drive;
-import org.firstinspires.ftc.teamcode.TeleOp.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.TeleOp.subsystems.Launcher;
+import org.firstinspires.ftc.teamcode.subsystems.Drive;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 
 @TeleOp(name="TeleOpMain", group="TeleOpMode")
 public class TeleOpMain extends LinearOpMode {
