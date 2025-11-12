@@ -1,12 +1,19 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import android.os.Trace;
+
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Intake {
 
-    private DcMotor intakeMotor = null;
+    private DcMotorEx intakeMotor = null;
     private double intakeMaxPower = 1.0;
 
     private Telemetry telemetry;
@@ -14,7 +21,7 @@ public class Intake {
     // Construtor recebe o hardwareMap e telemetry do OpMode
     public Intake(HardwareMap hardwareMap, Telemetry telemetry) {
         this.telemetry = telemetry;
-        intakeMotor = hardwareMap.get(DcMotor.class, "intake_motor");
+        intakeMotor = hardwareMap.get(DcMotorEx.class, "intake_motor");
         intakeMotor.setDirection(DcMotor.Direction.REVERSE);
     }
 
@@ -45,5 +52,20 @@ public class Intake {
     // Telemetria
     public void sendTelemetry() {
         telemetry.addData("Intake Power", intakeMotor.getPower());
+    }
+
+    public Action onAuto() {
+        return new Action() {
+            private boolean initialized = false;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                if (!initialized) {
+                    intakeMotor.setPower(intakeMaxPower);
+                    initialized = true;
+                }
+                return false;
+            }
+        };
     }
 }

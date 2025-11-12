@@ -15,7 +15,7 @@ public class LauncherTest extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
-            launcher.run(gamepad1.left_trigger > 0, gamepad1.right_trigger > 0);
+            launcher.run(gamepad1.left_trigger > 0, gamepad1.right_trigger > 0, gamepad1.a, gamepad1.b, gamepad1.y, 100);
             launcher.sendTelemetry();
             telemetry.update();
         }
