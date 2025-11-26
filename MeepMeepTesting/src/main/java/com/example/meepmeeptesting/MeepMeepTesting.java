@@ -1,45 +1,45 @@
 package com.example.meepmeeptesting;
 
 import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeBlueDark;
-import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeRedDark;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
-
 public class MeepMeepTesting {
 
     public static void main(String[] args) {
-        MeepMeep meepMeep = new MeepMeep(400);
+        MeepMeep meepMeep = new MeepMeep(800);
 
         // ==========================
         //   BOT AZUL (lado y negativo)
         // ==========================
         RoadRunnerBotEntity blueBot = new DefaultBotBuilder(meepMeep)
                 .setColorScheme(new ColorSchemeBlueDark())
-                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
-                .setDimensions(18, 18)
+                .setConstraints(100, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                .setDimensions(17.783, 17.617)
                 .build();
 
-        // --- POSIÇÕES BASE (AZUL) ---
-        final double startPositionX = -60;
-        final double startPositionY = -13;
+        // --- POSIÇÕES BASE ---
+        final double startPositionX = -61.1085;
+        final double startPositionY = -12;
 
-        final double launchPositionX = -13;
-        final double launchPositionY = -13;
+        final double launchPositionX = -12;
+        final double launchPositionY = -12;
 
         final double ppgPositionX = -12;
         final double ppgPositionY = -56;
 
         final double pgpPositionX = 14;
-        final double pgpPositionY = -65;
+        final double pgpPositionY = -63;
 
         final double gppPositionX = 36;
-        final double gppPositionY = -65;
+        final double gppPositionY = -63;
 
         final double preY = -25;
 
+        final double startPositionHeading = Math.toRadians(90);
         final double launchPositionHeading = Math.toRadians(45);
         final double modifPositionHeading = Math.toRadians(270);
 
@@ -53,35 +53,62 @@ public class MeepMeepTesting {
         final Vector2d prePgpVector = new Vector2d(pgpPositionX, preY);
         final Vector2d preGppVector = new Vector2d(gppPositionX, preY);
 
-        final Pose2d startPose = new Pose2d(startVector, launchPositionHeading);
+        final Pose2d startPose = new Pose2d(startVector, startPositionHeading);
         final Pose2d launchPose = new Pose2d(launchVector, launchPositionHeading);
         final Pose2d ppgPose = new Pose2d(ppgVector, modifPositionHeading);
         final Pose2d pgpPose = new Pose2d(pgpVector, modifPositionHeading);
         final Pose2d gppPose = new Pose2d(gppVector, modifPositionHeading);
 
+        // Trajetórias
 
-        blueBot.runAction(blueBot.getDrive().actionBuilder(startPose)
+        TrajectoryActionBuilder goToLaunch = blueBot.getDrive().actionBuilder(startPose)
+                .strafeTo(launchVector);
 
-                .strafeTo(launchVector)
-                //PPG
+        TrajectoryActionBuilder goToPPG = blueBot.getDrive().actionBuilder(launchPose)
                 .strafeToLinearHeading(prePpgVector, modifPositionHeading)
                 .strafeTo(ppgVector)
+                ;
 
+        TrajectoryActionBuilder returnToLaunchByPPG = blueBot.getDrive().actionBuilder(ppgPose)
                 .strafeToLinearHeading(launchVector, launchPositionHeading)
+                ;
 
-                //PGP
+        TrajectoryActionBuilder goToPGP = blueBot.getDrive().actionBuilder(launchPose)
                 .strafeToLinearHeading(prePgpVector, modifPositionHeading)
                 .strafeTo(pgpVector)
+                ;
 
+        TrajectoryActionBuilder returnToLaunchByPGP = blueBot.getDrive().actionBuilder(pgpPose)
                 .strafeToLinearHeading(launchVector, launchPositionHeading)
+                ;
 
-                //GPP
+        TrajectoryActionBuilder goToGPP = blueBot.getDrive().actionBuilder(launchPose)
                 .strafeToLinearHeading(preGppVector, modifPositionHeading)
                 .strafeTo(gppVector)
+                ;
 
+        TrajectoryActionBuilder returnToLaunchByGPP = blueBot.getDrive().actionBuilder(gppPose)
                 .strafeToLinearHeading(launchVector, launchPositionHeading)
+                ;
 
-                .build());
+        TrajectoryActionBuilder conjunto = blueBot.getDrive().actionBuilder(startPose)
+                .strafeTo(launchVector)
+                .strafeToLinearHeading(prePpgVector, modifPositionHeading)
+                .strafeTo(ppgVector)
+                .strafeToLinearHeading(launchVector, launchPositionHeading)
+                .strafeToLinearHeading(prePgpVector, modifPositionHeading)
+                .strafeTo(pgpVector)
+                .strafeToLinearHeading(launchVector, launchPositionHeading)
+                .strafeToLinearHeading(preGppVector, modifPositionHeading)
+                .strafeTo(gppVector)
+                .strafeToLinearHeading(launchVector, launchPositionHeading)
+                ;
+
+        blueBot.runAction(
+                conjunto.build()
+        );
+
+
 
         // ==========================
         //   VISUALIZAÇÃO

@@ -16,22 +16,21 @@ import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 @Autonomous(name = "AutoBlueStrafe", group = "Autonomous")
 public class AutoBlueStrafe extends LinearOpMode {
 
+    // --- POSIÇÕES BASE ---
+    final double startPositionX = -61.1085;
+    final double startPositionY = -12;
 
-    // --- POSIÇÕES BASE (AZUL) ---
-    final double startPositionX = -60;
-    final double startPositionY = -13;
-
-    final double launchPositionX = -13;
-    final double launchPositionY = -13;
+    final double launchPositionX = -12;
+    final double launchPositionY = -12;
 
     final double ppgPositionX = -12;
     final double ppgPositionY = -56;
 
-    final double pgpPositionX = 15;
-    final double pgpPositionY = -64;
+    final double pgpPositionX = 14;
+    final double pgpPositionY = -63;
 
     final double gppPositionX = 36;
-    final double gppPositionY = -64;
+    final double gppPositionY = -63;
 
     final double preY = -25;
 
@@ -98,6 +97,7 @@ public class AutoBlueStrafe extends LinearOpMode {
         TrajectoryActionBuilder returnToLaunchByGPP = drive.actionBuilder(gppPose)
                 .strafeToLinearHeading(launchVector, launchPositionHeading)
                 ;
+
 
         // ======================================
         // SELEÇÃO DE TENSÃO (antes do start)
