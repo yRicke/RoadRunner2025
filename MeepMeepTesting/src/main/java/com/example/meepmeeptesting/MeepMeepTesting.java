@@ -27,13 +27,13 @@ public class MeepMeepTesting {
         final double startPositionY = -18;
 
         final double ppgPositionX = -12;
-        final double ppgPositionY = -46;
+        final double ppgPositionY = -55;
 
         final double pgpPositionX = 12;
-        final double pgpPositionY = -46;
+        final double pgpPositionY = -55;
 
         final double gppPositionX = 36;
-        final double gppPositionY = -46;
+        final double gppPositionY = -55;
 
         final double preY = -25;
 

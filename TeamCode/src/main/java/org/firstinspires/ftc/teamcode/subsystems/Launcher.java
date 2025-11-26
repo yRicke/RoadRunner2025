@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -15,12 +16,8 @@ public class Launcher {
     private DcMotorEx launcherMotorOne = null;
     private DcMotorEx launcherMotorTwo = null;
     private DcMotorEx indexMotor = null;
-    private double lastDistance = 0; // guarda a última distância válida
 
-
-    private double launcherPower = 0.7;
-    private double extra = 0;
-    private double powerPerDistance = 0.0041975308642;
+    private double launcherPower = 0.8;
 
     private final double indexMaxPower = 1;
 
@@ -35,19 +32,19 @@ public class Launcher {
         launcherMotorOne = hardwareMap.get(DcMotorEx.class, "launcher_motor_one");
         launcherMotorTwo = hardwareMap.get(DcMotorEx.class, "launcher_motor_two");
         indexMotor = hardwareMap.get(DcMotorEx.class, "index_motor");
+        indexMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
     }
 
     // Executa o launcher
-    public void run(boolean on, boolean shoot, boolean modeA, boolean modeB, boolean modeY, double distance) {
+    public void run(boolean on, boolean shoot, boolean modeA, boolean modeB, boolean modeY) {
         if (modeA){
-            extra = 0;
+            launcherPower = 0.8; //Normal
         } else if(modeB){
-            extra = 0.1;
+            launcherPower = 1.0; //Forte
         } else if (modeY){
-            extra = 0.2;
+            launcherPower = 0.7; //Fraco
         }
-        launcherPower= distance * powerPerDistance + extra;
 
         if (on) {
             onLauncherMotors(launcherPower);

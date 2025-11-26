@@ -8,15 +8,13 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 
-@Autonomous(name = "PPGBlue", group = "Autonomous")
-public class PPGBlue extends LinearOpMode {
+@Autonomous(name = "AutoBlue", group = "Autonomous")
+public class AutoBlue extends LinearOpMode {
 
 
     // ==========================
@@ -26,13 +24,13 @@ public class PPGBlue extends LinearOpMode {
     final double startPositionY = -18;
 
     final double ppgPositionX = -12;
-    final double ppgPositionY = -46;
+    final double ppgPositionY = -55;
 
     final double pgpPositionX = 12;
-    final double pgpPositionY = -46;
+    final double pgpPositionY = -55;
 
     final double gppPositionX = 36;
-    final double gppPositionY = -46;
+    final double gppPositionY = -55;
 
     final double preY = -25;
 
@@ -64,60 +62,46 @@ public class PPGBlue extends LinearOpMode {
         //Odometria
         MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
         //Trajetórias
-        TrajectoryActionBuilder Geral = drive.actionBuilder(startPose)
-                // --- PPG ---
-                .strafeToLinearHeading(prePpgVector, modifPositionHeading)
-                .strafeTo(ppgVector)
-                // ponto final
-                .strafeToLinearHeading(startVector, startPositionHeading)
-
-                // --- PGP ---
-                .strafeToLinearHeading(prePgpVector, modifPositionHeading)
-                .strafeTo(pgpVector)
-                // ponto final
-                .strafeToLinearHeading(startVector, startPositionHeading)
-
-                // --- GPP ---
-                .strafeToLinearHeading(preGppVector, modifPositionHeading)
-                .strafeTo(gppVector)
-                // ponto final
-                .strafeToLinearHeading(startVector, startPositionHeading)
-                ;
 
         TrajectoryActionBuilder goToPPG = drive.actionBuilder(startPose)
                 .strafeToLinearHeading(prePpgVector, modifPositionHeading)
                 .strafeTo(ppgVector)
                 ;
 
-        TrajectoryActionBuilder goToPGP = drive.actionBuilder(new Pose2d(new Vector2d(startPositionX, startPositionY+2), startPositionHeading-Math.toRadians(10)))
+        TrajectoryActionBuilder goToPGP = drive.actionBuilder(new Pose2d
+                        (new Vector2d(startPositionX, startPositionY), startPositionHeading))
                 .strafeToLinearHeading(prePgpVector, modifPositionHeading)
                 .strafeTo(pgpVector)
                 ;
 
-        TrajectoryActionBuilder goToGPP = drive.actionBuilder(new Pose2d(new Vector2d(startPositionX, startPositionY+5), startPositionHeading-Math.toRadians(7)))
+        TrajectoryActionBuilder goToGPP = drive.actionBuilder(new Pose2d
+                        (new Vector2d(startPositionX, startPositionY), startPositionHeading))
                 .strafeToLinearHeading(preGppVector, modifPositionHeading)
                 .strafeTo(gppVector)
                 ;
 
         TrajectoryActionBuilder returnToStartByPPG = drive.actionBuilder(new Pose2d(ppgVector, modifPositionHeading))
-                .strafeToLinearHeading(new Vector2d(startPositionX, startPositionY+2), startPositionHeading-Math.toRadians(10))
+                .strafeToLinearHeading
+                        (new Vector2d(startPositionX, startPositionY), startPositionHeading)
                 ;
 
         TrajectoryActionBuilder returnToStartByPGP = drive.actionBuilder(new Pose2d(pgpVector, modifPositionHeading))
-                .strafeToLinearHeading(new Vector2d(startPositionX, startPositionY+5), startPositionHeading-Math.toRadians(7))
+                .strafeToLinearHeading
+                        (new Vector2d(startPositionX, startPositionY), startPositionHeading)
                 ;
 
         TrajectoryActionBuilder returnToStartByGPP = drive.actionBuilder(new Pose2d(gppVector, modifPositionHeading))
-                .strafeToLinearHeading(new Vector2d(startPositionX+1, startPositionY+9), startPositionHeading-Math.toRadians(6))
+                .strafeToLinearHeading
+                        (new Vector2d(startPositionX+1, startPositionY), startPositionHeading)
                 ;
 
         // ======================================
-// SELEÇÃO DE VOLTAGEM (antes do start)
+// SELEÇÃO DE TENSÃO (antes do start)
 // ======================================
 
         double flywheelPower = 0.665; // padrão (12.8V)
         double[] voltages = {12.6, 12.8, 13.0, 13.2, 13.4};
-        double[] powers   = {0.70, 0.67, 0.65, 0.635, 0.62};
+        double[] powers   = {0.8, 0.77, 0.75, 0.735, 0.72};
         int index = 1; // começa em 12.8V
 
         telemetry.addLine("=== SELECIONE A VOLTAGEM ===");
@@ -151,7 +135,7 @@ public class PPGBlue extends LinearOpMode {
                         intake.onAuto(),
                         launcher.onAuto(flywheelPower),
                         new SequentialAction(
-                                new DelayAction(1.6),
+                                new DelayAction(1.8),
                                 launcher.launch(),
                                 goToPPG.build(),
                                 returnToStartByPPG.build(),
