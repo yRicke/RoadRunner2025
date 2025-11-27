@@ -20,10 +20,13 @@ public class Launcher {
     private double launcherPower = 0.8;
 
     private final double indexMaxPower = 1;
+    private final double indexMaxPowerAuto = 0.46;
 
-    private Telemetry telemetry;
     private ElapsedTime indexTimer = new ElapsedTime();
     private double indexAutoSeconds = 2.4;
+
+    private Telemetry telemetry;
+
 
     // Construtor recebe o hardwareMap e telemetry do OpMode
     public Launcher(HardwareMap hardwareMap, Telemetry telemetry) {
@@ -111,7 +114,7 @@ public class Launcher {
                 // Inicializa uma vez
                 if (!initialized) {
                     indexTimer.reset();
-                    indexMotor.setPower(0.46); // liga o index
+                    indexMotor.setPower(indexMaxPowerAuto); // liga o index
                     initialized = true;
                 }
 
