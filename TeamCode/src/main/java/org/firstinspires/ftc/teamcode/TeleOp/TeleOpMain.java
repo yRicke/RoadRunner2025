@@ -29,8 +29,7 @@
 
 
                 // subsistemas
-                drive.run(gamepad1.left_stick_y, -gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.right_bumper
-                );
+                drive.run(gamepad1.left_stick_y, -gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.right_bumper);
                 intake.run(gamepad1.left_trigger > 0, gamepad1.left_bumper);
                 launcher.run(gamepad1.left_trigger > 0, gamepad1.right_trigger > 0, gamepad1.a, gamepad1.b, gamepad1.y);
 

@@ -53,21 +53,14 @@ public class AutoBlueStrafe extends LinearOpMode {
     final Pose2d pgpPose = new Pose2d(pgpVector, modifPositionHeading);
     final Pose2d gppPose = new Pose2d(gppVector, modifPositionHeading);
 
-    Intake intake;
-    Launcher launcher;
-
     @Override
     public void runOpMode(){
 
-        intake = new Intake(hardwareMap, telemetry);
-        launcher = new Launcher(hardwareMap, telemetry);
-
-        //Odometria
-
+        Intake intake = new Intake(hardwareMap, telemetry);
+        Launcher launcher = new Launcher(hardwareMap, telemetry);
         MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
 
         //Trajetórias
-
         TrajectoryActionBuilder goToLaunch = drive.actionBuilder(startPose)
                 .strafeTo(launchVector);
 
@@ -100,7 +93,7 @@ public class AutoBlueStrafe extends LinearOpMode {
 
 
         // ======================================
-        // SELEÇÃO DE TENSÃO (antes do start)
+        // SELEÇÃO DE POTÊNCIA (antes do start)
         // ======================================
 
         double flywheelPower = 0.75;
@@ -108,7 +101,7 @@ public class AutoBlueStrafe extends LinearOpMode {
         telemetry.addLine("=== SELECIONE A VOLTAGEM ===");
         telemetry.update();
 
-// loop de seleção antes de iniciar
+        // loop de seleção antes de iniciar
         while (!isStarted() && !isStopRequested()) {
             if (gamepad1.dpad_up) {
                 flywheelPower += 0.01;
