@@ -4,12 +4,14 @@ import androidx.annotation.NonNull;
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.SleepAction;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Auto.DelayAction;
 
 public class Launcher {
 
@@ -17,7 +19,7 @@ public class Launcher {
     private DcMotorEx launcherMotorTwo = null;
     private DcMotorEx indexMotor = null;
 
-    private double launcherPower = 0.8;
+    private double launcherPower = 0.75;
 
     private final double indexMaxPower = 1;
     private final double indexMaxPowerAuto = 0.46;
@@ -39,15 +41,29 @@ public class Launcher {
 
     }
 
+    double[] powers = {0.6, 0.65, 0.70, 0.75, 0.80, 0.85, 0.9,0.95, 1.0};
+    int index = 3;
+    long lastChange = 0;
+    long cooldown = 200; // 200ms
+
     // Executa o launcher
-    public void run(boolean on, boolean shoot, boolean modeA, boolean modeB, boolean modeY) {
-        if (modeA){
-            launcherPower = 0.8; //Normal
-        } else if(modeB){
-            launcherPower = 1.0; //Forte
-        } else if (modeY){
-            launcherPower = 0.7; //Fraco
+    public void run(boolean on, boolean shoot, boolean normalPower, boolean increasePower, boolean decreasePower, double improvePower) {
+
+        long now = System.currentTimeMillis();
+
+        if (now - lastChange > cooldown) {
+            if (increasePower) {
+                index = Math.min(index + 1, powers.length - 1);
+                lastChange = now;
+            } else if (decreasePower) {
+                index = Math.max(index - 1, 0);
+                lastChange = now;
+            } else if(normalPower){
+                index = 3;
+                lastChange = now;
+            }
         }
+        launcherPower = powers[index] +  improvePower*0.075;
 
         if (on) {
             onLauncherMotors(launcherPower);
@@ -80,6 +96,7 @@ public class Launcher {
     }
 
     public void sendTelemetry() {
+        telemetry.addData("Flywheelpower", launcherPower);
         telemetry.addData("Launcher Motor One Power", launcherMotorOne.getPower());
         telemetry.addData("Launcher Motor Two Power", launcherMotorTwo.getPower());
         telemetry.addData("Index Motor Power", indexMotor.getPower());

@@ -35,8 +35,13 @@ public class Drive {
     }
 
     // Executa a movimentação do drive
-    public void run(double axial, double lateral, double yaw, boolean precisionMode) {
+    public void run(double axial, double lateral, double yaw, boolean precisionMode, double correctionYaw, boolean boostCorrectYaw) {
         setPrecisionControlMultiplier(precisionMode);
+
+        if (!boostCorrectYaw){
+            correctionYaw *= 0.4;
+        }
+        yaw += correctionYaw;
 
         double frontLeftPower  = (axial + lateral + yaw) * precisionControlMultiplier;
         double frontRightPower = (axial - lateral - yaw) * precisionControlMultiplier;
