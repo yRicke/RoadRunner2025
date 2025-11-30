@@ -13,11 +13,11 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher;
 
-@Autonomous(name = "AutoBlueStrafe", group = "Autonomous")
-public class AutoBlueStrafe extends LinearOpMode {
+@Autonomous(name = "AutoBlueNorth", group = "Autonomous")
+public class AutoBlueNorth extends LinearOpMode {
 
     // --- POSIÇÕES BASE ---
-    final double startPositionX = -61.1085;
+    final double startPositionX = -62;
     final double startPositionY = -12;
 
     final double launchPositionX = -12;
@@ -34,6 +34,7 @@ public class AutoBlueStrafe extends LinearOpMode {
 
     final double preY = -25;
 
+    final double startPositionHeading = Math.toRadians(90);
     final double launchPositionHeading = Math.toRadians(45);
     final double modifPositionHeading = Math.toRadians(270);
 
@@ -47,7 +48,7 @@ public class AutoBlueStrafe extends LinearOpMode {
     final Vector2d prePgpVector = new Vector2d(pgpPositionX, preY);
     final Vector2d preGppVector = new Vector2d(gppPositionX, preY);
 
-    final Pose2d startPose = new Pose2d(startVector, launchPositionHeading);
+    final Pose2d startPose = new Pose2d(startVector, startPositionHeading);
     final Pose2d launchPose = new Pose2d(launchVector, launchPositionHeading);
     final Pose2d ppgPose = new Pose2d(ppgVector, modifPositionHeading);
     final Pose2d pgpPose = new Pose2d(pgpVector, modifPositionHeading);
@@ -62,7 +63,7 @@ public class AutoBlueStrafe extends LinearOpMode {
 
         //Trajetórias
         TrajectoryActionBuilder goToLaunch = drive.actionBuilder(startPose)
-                .strafeTo(launchVector);
+                .strafeToLinearHeading(launchVector, launchPositionHeading);
 
         TrajectoryActionBuilder goToPPG = drive.actionBuilder(launchPose)
                 .strafeToLinearHeading(prePpgVector, modifPositionHeading)

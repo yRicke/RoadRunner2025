@@ -15,7 +15,7 @@ public class DriveTest extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
-            drive.run(gamepad1.left_stick_y, -gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.right_bumper, gamepad2.right_stick_x, gamepad2.right_stick_button);
+            drive.run(gamepad1.left_stick_y, -gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.right_bumper, gamepad2.right_stick_x);
             drive.sendTelemetry();
             telemetry.update();
         }

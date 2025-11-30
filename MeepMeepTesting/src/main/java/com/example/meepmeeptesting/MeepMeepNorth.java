@@ -7,7 +7,7 @@ import com.noahbres.meepmeep.MeepMeep;
 import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeBlueDark;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
-public class MeepMeepTesting {
+public class MeepMeepNorth {
 
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
@@ -22,7 +22,7 @@ public class MeepMeepTesting {
                 .build();
 
         // --- POSIÇÕES BASE ---
-        final double startPositionX = -61.1085;
+        final double startPositionX = -62;
         final double startPositionY = -12;
 
         final double launchPositionX = -12;
@@ -62,7 +62,7 @@ public class MeepMeepTesting {
         // Trajetórias
 
         TrajectoryActionBuilder goToLaunch = blueBot.getDrive().actionBuilder(startPose)
-                .strafeTo(launchVector);
+                .strafeToLinearHeading(launchVector, launchPositionHeading);
 
         TrajectoryActionBuilder goToPPG = blueBot.getDrive().actionBuilder(launchPose)
                 .strafeToLinearHeading(prePpgVector, modifPositionHeading)
@@ -92,7 +92,7 @@ public class MeepMeepTesting {
                 ;
 
         TrajectoryActionBuilder conjunto = blueBot.getDrive().actionBuilder(startPose)
-                .strafeTo(launchVector)
+                .strafeToLinearHeading(launchVector, launchPositionHeading)
                 .strafeToLinearHeading(prePpgVector, modifPositionHeading)
                 .strafeTo(ppgVector)
                 .strafeToLinearHeading(launchVector, launchPositionHeading)
