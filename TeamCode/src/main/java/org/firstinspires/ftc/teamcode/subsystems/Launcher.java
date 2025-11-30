@@ -27,8 +27,6 @@ public class Launcher {
     double[] indexPowers = {0.5, 0.6, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0};
     int indexPowerSelected = 4;
     int launcherPowerSelected = 3;
-    long lastLauncherChange = 0;
-    long lastIndexChange = 0;
     long cooldownLauncher = 200;// 200ms
     long cooldownIndex = 200;// 200ms
 
@@ -36,6 +34,8 @@ public class Launcher {
     private double indexPower = indexPowers[indexPowerSelected];
     private final double indexPowerAuto = 0.46;
 
+    private final ElapsedTime launcherTimer = new ElapsedTime();
+    private final ElapsedTime indexChangeTimer = new ElapsedTime();
 
     // Construtor recebe o hardwareMap e telemetry do OpMode
     public Launcher(HardwareMap hardwareMap, Telemetry telemetry) {
@@ -46,18 +46,15 @@ public class Launcher {
         launcherMotorOne.setDirection(DcMotorSimple.Direction.REVERSE);
         indexMotor = hardwareMap.get(DcMotorEx.class, "index_motor");
         indexMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-
     }
 
     // Executa o launcher
     public void run(boolean on, boolean shoot, boolean normalPower, boolean maxPower, boolean minPower, boolean launcherIncreasePower, boolean launcherDecreasePower, double improvePower, boolean indexIncreasePower, boolean indexDecreasePower) {
 
-        long now = System.currentTimeMillis();
-
         // Ajuste da velocidade do launcher
-        adjustLauncherPower(now, launcherIncreasePower, launcherDecreasePower, normalPower, minPower, maxPower, improvePower);
+        adjustLauncherPower(launcherIncreasePower, launcherDecreasePower, normalPower, minPower, maxPower, improvePower);
         // Ajuste da velocidade do index
-        adjustIndexPower(now, indexIncreasePower, indexDecreasePower);
+        adjustIndexPower(indexIncreasePower, indexDecreasePower);
 
         if (on) {
             onLauncherMotors(launcherPower);
@@ -71,38 +68,39 @@ public class Launcher {
         }
     }
 
-    public void adjustLauncherPower(long now, boolean increasePower, boolean decreasePower, boolean normalPower, boolean minPower, boolean maxPower, double improvePower) {
+    public void adjustLauncherPower(boolean increasePower, boolean decreasePower, boolean normalPower, boolean minPower, boolean maxPower, double improvePower) {
 
-        if(normalPower){
+        if (normalPower) {
             launcherPowerSelected = 3;
-        } else if(minPower){
+        } else if (minPower) {
             launcherPowerSelected = 0;
-        } else if(maxPower){
-            launcherPowerSelected = launcherPowers.length -1;
+        } else if (maxPower) {
+            launcherPowerSelected = launcherPowers.length - 1;
         } else {
-            if (now - lastLauncherChange > cooldownLauncher) {
+            if (launcherTimer.milliseconds() > cooldownLauncher) {
                 if (increasePower) {
                     launcherPowerSelected = Math.min(launcherPowerSelected + 1, launcherPowers.length - 1);
-                    lastLauncherChange = now;
+                    launcherTimer.reset();
                 } else if (decreasePower) {
                     launcherPowerSelected = Math.max(launcherPowerSelected - 1, 0);
-                    lastLauncherChange = now;
+                    launcherTimer.reset();
                 }
             }
         }
+
         launcherPower = Range.clip(launcherPowers[launcherPowerSelected] + improvePower * 0.05, 0.6, 1);
     }
 
-    public void adjustIndexPower(long now, boolean increasePower, boolean decreasePower) {
-        if (now - lastIndexChange > cooldownIndex) {
+    public void adjustIndexPower(boolean increasePower, boolean decreasePower) {
+        if (indexChangeTimer.milliseconds() > cooldownIndex) {
             if (increasePower) {
                 indexPowerSelected = Math.min(indexPowerSelected + 1, indexPowers.length - 1);
-                lastIndexChange = now;
             } else if (decreasePower) {
                 indexPowerSelected = Math.max(indexPowerSelected - 1, 0);
-                lastIndexChange = now;
             }
+            indexChangeTimer.reset();
         }
+
         indexPower = indexPowers[indexPowerSelected];
     }
 
@@ -137,7 +135,7 @@ public class Launcher {
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
-                    launcherMotorOne.setPower(-flyWheelMaxPowerAuto);
+                    launcherMotorOne.setPower(flyWheelMaxpower);
                     launcherMotorTwo.setPower(flyWheelMaxPowerAuto);
                     initialized = true;
                 }
