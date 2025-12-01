@@ -37,7 +37,7 @@ public class AutoRedSouth extends LinearOpMode {
     final double ppgPositionX = -12;
     final double ppgPositionY = 56; // Invertido: -56 -> 56
 
-    final double pgpPositionX = 14;
+    final double pgpPositionX = 15;
     final double pgpPositionY = 63; // Invertido: -63 -> 63
 
     final double gppPositionX = 36;

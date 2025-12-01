@@ -77,6 +77,6 @@ public class Drive {
 
     // Controle de precisão
     private void setPrecisionControlMultiplier(boolean precisionMode) {
-        precisionControlMultiplier = precisionMode ? 0.5 : 1.0;
+        precisionControlMultiplier = precisionMode ? 0.3 : 1.0;
     }
 }

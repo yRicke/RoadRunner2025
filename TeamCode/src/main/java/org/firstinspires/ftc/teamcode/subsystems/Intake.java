@@ -25,11 +25,11 @@ public class Intake {
 
     // Executa o intake com base no gatilho
     public void run(boolean on, boolean eject) {
-        if (on) {
-            onMotor();
-        }
-        else if (eject){
+        if (eject) {
             eject();
+        }
+        else if (on){
+            onMotor();
         }
         else{
             offMotor();

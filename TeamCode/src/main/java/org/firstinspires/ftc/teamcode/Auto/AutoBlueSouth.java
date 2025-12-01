@@ -36,7 +36,7 @@ public class AutoBlueSouth extends LinearOpMode {
     final double ppgPositionX = -12;
     final double ppgPositionY = -56; // Posição mais à esquerda (perto do centro)
 
-    final double pgpPositionX = 14;
+    final double pgpPositionX = 15;
     final double pgpPositionY = -63; // Posição central
 
     final double gppPositionX = 36;
@@ -164,7 +164,7 @@ public class AutoBlueSouth extends LinearOpMode {
                                 // 3. Lançamento PPG
                                 launcher.launch(),  // Lança 3º elemento
                                 goToPPG.build(),    // Vai para PPG
-                                returnToSecondLaunchByPPG.build(), // Volta para Second Launch
+                                returnToLaunchByGPP.build(), // Volta para Second Launch
 
                                 // 4. Lançamento final (se houver 4ª peça)
                                 launcher.launch() // Lança 4º elemento (parado na Second Launch)
