@@ -2,6 +2,7 @@
 
     import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
     import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+    import com.qualcomm.robotcore.hardware.Servo;
 
     import org.firstinspires.ftc.teamcode.subsystems.Drive;
     import org.firstinspires.ftc.teamcode.subsystems.Intake;
@@ -13,12 +14,15 @@
         private Drive drive;
         private Intake intake;
         private Launcher launcher;
+        Servo rgb;
 
         @Override
         public void runOpMode() {
             drive = new Drive(hardwareMap, telemetry);
             intake = new Intake(hardwareMap, telemetry);
             launcher = new Launcher(hardwareMap, telemetry);
+            rgb = hardwareMap.get(Servo.class, "rgb");
+            rgb.setPosition(0.722);
 
             telemetry.addLine("Status: Inicializado");
             telemetry.update();
@@ -26,6 +30,7 @@
             waitForStart();
 
             while (opModeIsActive()) {
+                rgb.setPosition(0.28);
 
                 //Subsistemas
                 drive.run(gamepad1.left_stick_y, -gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.left_trigger > 0, gamepad2.right_stick_x);
