@@ -29,8 +29,6 @@ public class AutoBlueSouth extends LinearOpMode {
     final double launchPositionX = 50;
     final double launchPositionY = -12;
 
-    final double secondLaunchPositionX = -12;
-    final double secondLaunchPositionY = -12;
 
     // Posições de Pontuação/Coleta (Backboard Side)
     final double ppgPositionX = -12;
@@ -47,13 +45,11 @@ public class AutoBlueSouth extends LinearOpMode {
     // Direções (Headings)
     final double startPositionHeading = Math.toRadians(0);
     final double launchPositionHeading = Math.toRadians(30);
-    final double secondLaunchPositionHeading = Math.toRadians(45);
     final double modifPositionHeading = Math.toRadians(270); // Heading para alinhar com o Backboard
 
     // Vetores de Posição
     final Vector2d startVector = new Vector2d(startPositionX, startPositionY);
     final Vector2d launchVector = new Vector2d(launchPositionX, launchPositionY);
-    final Vector2d secondLaunchVector = new Vector2d(secondLaunchPositionX, secondLaunchPositionY);
     final Vector2d ppgVector = new Vector2d(ppgPositionX, ppgPositionY);
     final Vector2d pgpVector = new Vector2d(pgpPositionX, pgpPositionY);
     final Vector2d gppVector = new Vector2d(gppPositionX, gppPositionY);
@@ -66,7 +62,6 @@ public class AutoBlueSouth extends LinearOpMode {
     // Poses Completas
     final Pose2d startPose = new Pose2d(startVector, startPositionHeading);
     final Pose2d launchPose = new Pose2d(launchVector, launchPositionHeading);
-    final Pose2d secondLaunchPose = new Pose2d(secondLaunchVector, secondLaunchPositionHeading);
     final Pose2d ppgPose = new Pose2d(ppgVector, modifPositionHeading);
     final Pose2d pgpPose = new Pose2d(pgpVector, modifPositionHeading);
     final Pose2d gppPose = new Pose2d(gppVector, modifPositionHeading);
@@ -85,32 +80,32 @@ public class AutoBlueSouth extends LinearOpMode {
         TrajectoryActionBuilder goToLaunch = drive.actionBuilder(startPose)
                 .strafeToLinearHeading(launchVector, launchPositionHeading);
 
-        // 2. Launch para GPP (Ponto de Pontuação/Coleta mais à direita)
         TrajectoryActionBuilder goToGPP = drive.actionBuilder(launchPose)
-                .strafeToLinearHeading(preGppVector, modifPositionHeading) // Move para a pré-posição
-                .strafeTo(gppVector); // Entra na posição de pontuação
+                .strafeToLinearHeading(preGppVector, modifPositionHeading)
+                .strafeTo(gppVector)
+                ;
 
-        // 3. GPP de volta para Launch
-        TrajectoryActionBuilder returnToLaunchByGPP = drive.actionBuilder(gppPose)
-                .strafeToLinearHeading(launchVector, launchPositionHeading);
+        TrajectoryActionBuilder returnToLaunchByGPP =drive.actionBuilder(gppPose)
+                .strafeToLinearHeading(launchVector, launchPositionHeading)
+                ;
 
-        // 4. Launch para PGP (Ponto de Pontuação/Coleta central)
         TrajectoryActionBuilder goToPGP = drive.actionBuilder(launchPose)
-                .strafeToLinearHeading(prePgpVector, modifPositionHeading) // Move para a pré-posição
-                .strafeTo(pgpVector); // Entra na posição de pontuação
+                .strafeToLinearHeading(prePgpVector, modifPositionHeading)
+                .strafeTo(pgpVector)
+                ;
 
-        // 5. PGP para o 2º Ponto de Lançamento (Second Launch - cruzando o campo)
-        TrajectoryActionBuilder goToSecondLaunchByPGP = drive.actionBuilder(pgpPose)
-                .strafeToLinearHeading(secondLaunchVector, secondLaunchPositionHeading);
+        TrajectoryActionBuilder goToLaunchByPGP = drive.actionBuilder(pgpPose)
+                .strafeToLinearHeading(launchVector, launchPositionHeading)
+                ;
 
-        // 6. Second Launch para PPG (Ponto de Pontuação/Coleta mais à esquerda)
-        TrajectoryActionBuilder goToPPG = drive.actionBuilder(secondLaunchPose)
-                .strafeToLinearHeading(prePpgVector, modifPositionHeading) // Move para a pré-posição
-                .strafeTo(ppgVector); // Entra na posição de pontuação
+        TrajectoryActionBuilder goToPPG = drive.actionBuilder(launchPose)
+                .strafeToLinearHeading(prePpgVector, modifPositionHeading)
+                .strafeTo(ppgVector)
+                ;
 
-        // 7. PPG de volta para o 2º Ponto de Lançamento
-        TrajectoryActionBuilder returnToSecondLaunchByPPG = drive.actionBuilder(ppgPose)
-                .strafeToLinearHeading(secondLaunchVector, secondLaunchPositionHeading);
+        TrajectoryActionBuilder goToSecondLaunchByPPG = drive.actionBuilder(ppgPose)
+                .strafeToLinearHeading(launchVector, launchPositionHeading)
+                ;
 
 
         // ======================================
@@ -119,7 +114,7 @@ public class AutoBlueSouth extends LinearOpMode {
 
         double flywheelPower = 0.75;
 
-        telemetry.addLine("=== SELECIONE A VOLTAGEM ===");
+        telemetry.addLine("=== SELECIONE A FORÇA ===");
         telemetry.update();
 
         // Loop de seleção antes de iniciar (usa o Gamepad 1)
@@ -159,7 +154,7 @@ public class AutoBlueSouth extends LinearOpMode {
                                 // 2. Lançamento PGP
                                 launcher.launch(),  // Lança 2º elemento
                                 goToPGP.build(),    // Vai para PGP
-                                goToSecondLaunchByPGP.build(), // Move para 2ª posição de lançamento
+                                returnToLaunchByGPP.build(), // Move para 2ª posição de lançamento
 
                                 // 3. Lançamento PPG
                                 launcher.launch(),  // Lança 3º elemento
