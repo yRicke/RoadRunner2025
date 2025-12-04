@@ -16,7 +16,7 @@ public class VoltageTest extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
-            voltage.sendTelemetry(telemetry);
+            voltage.sendTelemetry();
             telemetry.update();
         }
     }
