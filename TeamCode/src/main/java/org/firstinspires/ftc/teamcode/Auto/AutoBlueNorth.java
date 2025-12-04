@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher;
+import org.firstinspires.ftc.teamcode.subsystems.Voltage;
 
 @Autonomous(name = "AutoBlueNorth", group = "Autonomous")
 public class AutoBlueNorth extends LinearOpMode {
@@ -54,12 +55,15 @@ public class AutoBlueNorth extends LinearOpMode {
     final Pose2d pgpPose = new Pose2d(pgpVector, modifPositionHeading);
     final Pose2d gppPose = new Pose2d(gppVector, modifPositionHeading);
 
+    String zone = "south";
+
     @Override
     public void runOpMode(){
 
         Intake intake = new Intake(hardwareMap, telemetry);
         Launcher launcher = new Launcher(hardwareMap, telemetry);
         MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
+        Voltage voltage = new Voltage(hardwareMap, telemetry);
 
         //Trajetórias
         TrajectoryActionBuilder goToLaunch = drive.actionBuilder(startPose)
@@ -124,7 +128,7 @@ public class AutoBlueNorth extends LinearOpMode {
         Actions.runBlocking(
                 new ParallelAction(
                         intake.onAuto(),
-                        launcher.onAuto(flywheelPower),
+                        launcher.onAuto(voltage.getMaxPowerVoltage(zone)),
                         new SequentialAction(
                                 goToLaunch.build(),
                                 launcher.launch(),
