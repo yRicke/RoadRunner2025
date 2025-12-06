@@ -55,7 +55,10 @@ public class AutoBlueNorth extends LinearOpMode {
     final Pose2d pgpPose = new Pose2d(pgpVector, modifPositionHeading);
     final Pose2d gppPose = new Pose2d(gppVector, modifPositionHeading);
 
-    String zone = "south";
+    String zone = "north";
+
+    final double indexPower = 0.46;
+    private final double indexSeconds = 2.4;
 
     @Override
     public void runOpMode(){
@@ -101,26 +104,9 @@ public class AutoBlueNorth extends LinearOpMode {
         // SELEÇÃO DE POTÊNCIA (antes do start)
         // ======================================
 
-        double flywheelPower = 0.75;
-
-        telemetry.addLine("=== SELECIONE A VOLTAGEM ===");
+        double flywheelPower =voltage.getMaxPowerVoltage(zone);
+        voltage.sendTelemetry();
         telemetry.update();
-
-        // loop de seleção antes de iniciar
-        while (!isStarted() && !isStopRequested()) {
-            if (gamepad1.dpad_up) {
-                flywheelPower += 0.01;
-                sleep(200);
-            } else if (gamepad1.dpad_down) {
-                flywheelPower -= 0.01;
-                sleep(200);
-            }
-
-            telemetry.clear();
-            telemetry.addData("Potência correspondente", "%.3f", flywheelPower);
-            telemetry.addLine("Use D-Pad ↑↓ para alterar");
-            telemetry.update();
-        }
 
         waitForStart();
 
@@ -128,19 +114,19 @@ public class AutoBlueNorth extends LinearOpMode {
         Actions.runBlocking(
                 new ParallelAction(
                         intake.onAuto(),
-                        launcher.onAuto(voltage.getMaxPowerVoltage(zone)),
+                        launcher.onAuto(flywheelPower),
                         new SequentialAction(
                                 goToLaunch.build(),
-                                launcher.launch(),
+                                launcher.launch(indexPower, indexSeconds),
                                 goToPPG.build(),
                                 returnToLaunchByPPG.build(),
-                                launcher.launch(),
+                                launcher.launch(indexPower, indexSeconds),
                                 goToPGP.build(),
                                 returnToLaunchByPGP.build(),
-                                launcher.launch(),
+                                launcher.launch(indexPower, indexSeconds),
                                 goToGPP.build(),
                                 returnToLaunchByGPP.build(),
-                                launcher.launch()
+                                launcher.launch(indexPower, indexSeconds)
                         )
                 )
         );

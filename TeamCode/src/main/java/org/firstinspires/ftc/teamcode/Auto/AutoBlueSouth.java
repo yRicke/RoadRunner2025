@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher;
+import org.firstinspires.ftc.teamcode.subsystems.Voltage;
 
 /**
  * Autônomo para o lado Azul Sul (Blue South) do campo.
@@ -29,50 +30,50 @@ public class AutoBlueSouth extends LinearOpMode {
     final double launchPositionX = 50;
     final double launchPositionY = -12;
 
-
-    // Posições de Pontuação/Coleta (Backboard Side)
     final double ppgPositionX = -12;
-    final double ppgPositionY = -56; // Posição mais à esquerda (perto do centro)
+    final double ppgPositionY = -56;
 
     final double pgpPositionX = 15;
-    final double pgpPositionY = -63; // Posição central
+    final double pgpPositionY = -63;
 
     final double gppPositionX = 36;
-    final double gppPositionY = -63; // Posição mais à direita
+    final double gppPositionY = -63;
 
-    final double preY = -25; // Posição Y antes de entrar na área de pontuação (cruza o centro)
+    final double preY = -25;
 
-    // Direções (Headings)
     final double startPositionHeading = Math.toRadians(0);
-    final double launchPositionHeading = Math.toRadians(30);
-    final double modifPositionHeading = Math.toRadians(270); // Heading para alinhar com o Backboard
+    final double launchPositionHeading = Math.toRadians(20);
+    final double modifPositionHeading = Math.toRadians(270);
 
-    // Vetores de Posição
     final Vector2d startVector = new Vector2d(startPositionX, startPositionY);
     final Vector2d launchVector = new Vector2d(launchPositionX, launchPositionY);
     final Vector2d ppgVector = new Vector2d(ppgPositionX, ppgPositionY);
     final Vector2d pgpVector = new Vector2d(pgpPositionX, pgpPositionY);
     final Vector2d gppVector = new Vector2d(gppPositionX, gppPositionY);
 
-    // Vetores de Pré-posição
     final Vector2d prePpgVector = new Vector2d(ppgPositionX, preY);
     final Vector2d prePgpVector = new Vector2d(pgpPositionX, preY);
     final Vector2d preGppVector = new Vector2d(gppPositionX, preY);
 
-    // Poses Completas
     final Pose2d startPose = new Pose2d(startVector, startPositionHeading);
     final Pose2d launchPose = new Pose2d(launchVector, launchPositionHeading);
     final Pose2d ppgPose = new Pose2d(ppgVector, modifPositionHeading);
     final Pose2d pgpPose = new Pose2d(pgpVector, modifPositionHeading);
     final Pose2d gppPose = new Pose2d(gppVector, modifPositionHeading);
+    String zone = "south";
+    DelayAction launchDelay = new DelayAction(1.5);
+    final double indexPower = 0.392;
+    final double indexSeconds = 3.35;
+
 
     @Override
     public void runOpMode(){
 
         Intake intake = new Intake(hardwareMap, telemetry);
         Launcher launcher = new Launcher(hardwareMap, telemetry);
-        // Inicializa a tração com a pose inicial do robô
         MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
+        Voltage voltage = new Voltage(hardwareMap, telemetry);
+
 
         // --- TRAJETÓRIAS ---
 
@@ -94,7 +95,7 @@ public class AutoBlueSouth extends LinearOpMode {
                 .strafeTo(pgpVector)
                 ;
 
-        TrajectoryActionBuilder goToLaunchByPGP = drive.actionBuilder(pgpPose)
+        TrajectoryActionBuilder returnToLaunchByPGP = drive.actionBuilder(pgpPose)
                 .strafeToLinearHeading(launchVector, launchPositionHeading)
                 ;
 
@@ -103,7 +104,7 @@ public class AutoBlueSouth extends LinearOpMode {
                 .strafeTo(ppgVector)
                 ;
 
-        TrajectoryActionBuilder goToSecondLaunchByPPG = drive.actionBuilder(ppgPose)
+        TrajectoryActionBuilder returnToLaunchByPPG = drive.actionBuilder(ppgPose)
                 .strafeToLinearHeading(launchVector, launchPositionHeading)
                 ;
 
@@ -112,27 +113,9 @@ public class AutoBlueSouth extends LinearOpMode {
         // SELEÇÃO DE POTÊNCIA (antes do start)
         // ======================================
 
-        double flywheelPower = 0.75;
-
-        telemetry.addLine("=== SELECIONE A FORÇA ===");
+        double flywheelPower =voltage.getMaxPowerVoltage(zone);
+        voltage.sendTelemetry();
         telemetry.update();
-
-        // Loop de seleção antes de iniciar (usa o Gamepad 1)
-        while (!isStarted() && !isStopRequested()) {
-            if (gamepad1.dpad_up) {
-                flywheelPower = Math.min(1.0, flywheelPower + 0.01); // Limita a 1.0
-                sleep(200);
-            } else if (gamepad1.dpad_down) {
-                flywheelPower = Math.max(0.0, flywheelPower - 0.01); // Limita a 0.0
-                sleep(200);
-            }
-
-            telemetry.clear();
-            telemetry.addData("Potência correspondente", "%.3f", flywheelPower);
-            telemetry.addLine("Use D-Pad ↑↓ para alterar (Valor atual: " + String.format("%.3f", flywheelPower) + ")");
-            telemetry.addLine("Pressione START para iniciar");
-            telemetry.update();
-        }
 
         waitForStart();
 
@@ -142,27 +125,24 @@ public class AutoBlueSouth extends LinearOpMode {
                         // Ações paralelas
                         intake.onAuto(),
                         launcher.onAuto(flywheelPower),
-
                         // Ações sequenciais: Movimentação e Lançamento
                         new SequentialAction(
+                                launchDelay,
                                 // 1. Lançamento GPP
                                 goToLaunch.build(), // Move para a 1ª posição de lançamento
-                                launcher.launch(),  // Lança 1º elemento
+                                launcher.launch(indexPower, indexSeconds),  // Lança 1º elemento
                                 goToGPP.build(),    // Vai para GPP
                                 returnToLaunchByGPP.build(), // Volta para Launch
-
                                 // 2. Lançamento PGP
-                                launcher.launch(),  // Lança 2º elemento
+                                launcher.launch(indexPower, indexSeconds),  // Lança 2º elemento
                                 goToPGP.build(),    // Vai para PGP
-                                returnToLaunchByGPP.build(), // Move para 2ª posição de lançamento
-
+                                returnToLaunchByPGP.build(), // Move para a posição de lançamento
                                 // 3. Lançamento PPG
-                                launcher.launch(),  // Lança 3º elemento
+                                launcher.launch(indexPower, indexSeconds),  // Lança 3º elemento
                                 goToPPG.build(),    // Vai para PPG
-                                returnToLaunchByGPP.build(), // Volta para Second Launch
-
+                                returnToLaunchByPPG.build(), // Volta para Launch
                                 // 4. Lançamento final (se houver 4ª peça)
-                                launcher.launch() // Lança 4º elemento (parado na Second Launch)
+                                launcher.launch(indexPower, indexSeconds) // Lança 4º elemento (parado Launch)
                         )
                 )
         );

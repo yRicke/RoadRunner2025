@@ -19,7 +19,6 @@ public class Launcher {
     private final DcMotorEx indexMotor;
 
     private final ElapsedTime indexTimer = new ElapsedTime();
-    private final double indexAutoSeconds = 2.4;
 
     private final Telemetry telemetry;
 
@@ -34,8 +33,6 @@ public class Launcher {
 
     private double launcherPower = launcherPowers[launcherPowerSelected];
     private double indexPower = indexPowers[indexPowerSelected];
-    private final double indexPowerAuto = 0.46;
-
     private final ElapsedTime launcherTimer = new ElapsedTime();
     private final ElapsedTime indexChangeTimer = new ElapsedTime();
 
@@ -132,13 +129,12 @@ public class Launcher {
     public Action onAuto(double flyWheelMaxpower) {
         return new Action() {
             private boolean initialized = false;
-            final double flyWheelMaxPowerAuto = flyWheelMaxpower;
 
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
                     launcherMotorOne.setPower(flyWheelMaxpower);
-                    launcherMotorTwo.setPower(flyWheelMaxPowerAuto);
+                    launcherMotorTwo.setPower(flyWheelMaxpower);
                     initialized = true;
                 }
 
@@ -149,7 +145,7 @@ public class Launcher {
         };
     }
 
-    public Action launch() {
+    public Action launch(double indexAutoPower, double indexAutoSeconds) {
         return new Action() {
             private boolean initialized = false;
 
@@ -158,7 +154,7 @@ public class Launcher {
                 // Inicializa uma vez
                 if (!initialized) {
                     indexTimer.reset();
-                    indexMotor.setPower(indexPowerAuto); // liga o index
+                    indexMotor.setPower(indexAutoPower); // liga o index
                     initialized = true;
                 }
 
