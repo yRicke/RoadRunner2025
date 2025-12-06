@@ -2,16 +2,16 @@ package org.firstinspires.ftc.teamcode.TeleOp.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.subsystems.Launcher;
+import org.firstinspires.ftc.teamcode.subsystems.LauncherPower;
 
 @TeleOp(name="Launcher", group="TeleOpMode")
 public class LauncherTest extends LinearOpMode {
 
-    private Launcher launcher;
+    private LauncherPower launcher;
 
     @Override
     public void runOpMode() {
-        launcher = new Launcher(hardwareMap, telemetry);
+        launcher = new LauncherPower(hardwareMap, telemetry);
 
         waitForStart();
         while (opModeIsActive()) {

@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.Launcher;
+import org.firstinspires.ftc.teamcode.subsystems.LauncherPower;
 import org.firstinspires.ftc.teamcode.subsystems.Voltage;
 
 /**
@@ -70,7 +70,7 @@ public class AutoBlueSouth extends LinearOpMode {
     public void runOpMode(){
 
         Intake intake = new Intake(hardwareMap, telemetry);
-        Launcher launcher = new Launcher(hardwareMap, telemetry);
+        LauncherPower launcher = new LauncherPower(hardwareMap, telemetry);
         MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
         Voltage voltage = new Voltage(hardwareMap, telemetry);
 

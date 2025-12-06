@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class Launcher {
+public class LauncherPower {
 
     private final DcMotorEx launcherMotorOne;
     private final DcMotorEx launcherMotorTwo;
@@ -37,7 +37,7 @@ public class Launcher {
     private final ElapsedTime indexChangeTimer = new ElapsedTime();
 
     // Construtor recebe o hardwareMap e telemetry do OpMode
-    public Launcher(HardwareMap hardwareMap, Telemetry telemetry) {
+    public LauncherPower(HardwareMap hardwareMap, Telemetry telemetry) {
         this.telemetry = telemetry;
 
         launcherMotorOne = hardwareMap.get(DcMotorEx.class, "launcher_motor_one");
