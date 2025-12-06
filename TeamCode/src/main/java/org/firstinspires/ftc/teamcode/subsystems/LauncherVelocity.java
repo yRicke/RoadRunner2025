@@ -18,28 +18,29 @@ public class LauncherVelocity {
     private final DcMotorEx indexMotor;
 
     private final ElapsedTime indexTimer = new ElapsedTime();
-    private final ElapsedTime indexChangeTimer = new ElapsedTime();
+    private final ElapsedTime recoveryTimer = new ElapsedTime();
 
     private final Telemetry telemetry;
 
     // ----- INDEX POWER -----
-    double[] indexPowers = {0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8};
-    final int normalIndexSelect = 7;
-    int indexPowerSelected = normalIndexSelect;
-    long cooldownIndex = 200;
-    private double indexPower = indexPowers[indexPowerSelected];
+    private double indexPower = 0.9;
 
     // ----- VELOCITY CONTROL -----
     private final double TPR = 28; // ticks por rev
-    private final double MAX_RPM = 6000; // RPM máxima da flywheel (ajuste se necessário)
+    private final double MAX_RPM = 6000; // ajuste de acordo com seu motor
 
-    private double rpmMultiplier = 0.7;  // 70% = modo normal
+    // Presets
+    private double rpmMultiplier = 0.45; // modo normal
     private double targetRPM = MAX_RPM * rpmMultiplier;
     private double targetVelocityTPS = (targetRPM * TPR / 60.0);
 
-    // minimo de força pra lançar
-    private final double SHOOT_THRESHOLD = 0.95; // 95%
+    // ----- SHOOT CHECK -----
+    private final double SHOOT_THRESHOLD = 0.9; // 8 0% da velocidade alvo
 
+    // ----- RPM RECOVERY -----
+    private boolean recovering = false;
+    private final double RECOVERY_TIME = 0.18; // 180ms
+    private final double RECOVERY_DROP = 0.94; // 94% do alvo
     public LauncherVelocity(HardwareMap hardwareMap, Telemetry telemetry) {
         this.telemetry = telemetry;
 
@@ -61,65 +62,64 @@ public class LauncherVelocity {
             boolean shootRequest,
             boolean normalPower,
             boolean maxPower,
-            boolean minPower,
-            boolean indexIncreasePower,
-            boolean indexDecreasePower
+            boolean minPower
     ) {
 
-        // ====== RPM PRESET ======
+        // ===== PRESETS DE RPM =====
         if (normalPower) {
-            rpmMultiplier = 0.7; // 4200 RPM
-            indexPowerSelected = normalIndexSelect;
+            rpmMultiplier = 0.48;
         } else if (minPower) {
-            rpmMultiplier = 0.6; // 3600 RPM
-            indexPowerSelected = normalIndexSelect;
+            rpmMultiplier = 0.45;
         } else if (maxPower) {
-            rpmMultiplier = 0.9; // 5400 RPM
-            indexPowerSelected = normalIndexSelect;
+            rpmMultiplier = 0.605;
         }
 
-        targetRPM = MAX_RPM * rpmMultiplier;
-        targetVelocityTPS = targetRPM * (TPR / 60.0);
-
-        // ===== INDEX POWER ADJUST =====
-        adjustIndexPower(indexIncreasePower, indexDecreasePower);
-
-        // ===== LAUNCHER =====
-        if (on) {
-            onLauncherMotors();
-        } else {
-            offLauncherMotors();
+        // Se não estiver recuperando, define target normal
+        if (!recovering) {
+            targetRPM = MAX_RPM * rpmMultiplier;
+            targetVelocityTPS = targetRPM * (TPR / 60.0);
         }
 
-        // ===== LAUNCH CONTROL ===== lança apenas se o RPM estiver ok
+        // ===== ATIVA OU DESATIVA FLYWHEEL =====
+        if (on) onLauncherMotors();
+        else offLauncherMotors();
+
+        // ===== CONTROLE DE DISPARO =====
         if (shootRequest && readyToShoot()) {
+
+            // inicia recuperação pós-disparo
+            recovering = true;
+            recoveryTimer.reset();
+
             onIndexMotor();
+
         } else {
             offIndexMotor();
         }
+
+        // ===== SISTEMA DE RECUPERAÇÃO DE RPM =====
+        if (recovering) {
+            if (recoveryTimer.seconds() < RECOVERY_TIME) {
+
+                // Reduz temporariamente o RPM para evitar overshoot
+                double reducedRPM = (MAX_RPM * rpmMultiplier) * RECOVERY_DROP;
+                targetVelocityTPS = reducedRPM * (TPR / 60.0);
+
+            } else {
+
+                // Terminou a recuperação
+                recovering = false;
+                targetRPM = MAX_RPM * rpmMultiplier;
+                targetVelocityTPS = targetRPM * (TPR / 60.0);
+            }
+        }
     }
 
-    // Verifica se RPM está >= 95% do alvo
     public boolean readyToShoot() {
         double vel1 = launcherMotorOne.getVelocity();
         double vel2 = launcherMotorTwo.getVelocity();
         double avg = (vel1 + vel2) / 2.0;
-
         return avg >= targetVelocityTPS * SHOOT_THRESHOLD;
-    }
-
-    // Ajuste da força do index
-    public void adjustIndexPower(boolean increasePower, boolean decreasePower) {
-        if (indexChangeTimer.milliseconds() > cooldownIndex) {
-            if (increasePower) {
-                indexPowerSelected = Math.min(indexPowerSelected + 1, indexPowers.length - 1);
-            } else if (decreasePower) {
-                indexPowerSelected = Math.max(indexPowerSelected - 1, 0);
-            }
-            indexChangeTimer.reset();
-        }
-
-        indexPower = indexPowers[indexPowerSelected];
     }
 
     // ===== INDEX =====
@@ -142,7 +142,7 @@ public class LauncherVelocity {
         launcherMotorTwo.setPower(0);
     }
 
-    // ===== TELEMETRY =====
+    // ===== TELEMETRIA =====
     public void sendTelemetry() {
         double vel1 = launcherMotorOne.getVelocity();
         double vel2 = launcherMotorTwo.getVelocity();
@@ -150,11 +150,9 @@ public class LauncherVelocity {
 
         telemetry.addData("Target RPM", targetRPM);
         telemetry.addData("Target TPS", targetVelocityTPS);
-        telemetry.addData("Actual TPS M1", vel1);
-        telemetry.addData("Actual TPS M2", vel2);
         telemetry.addData("AVG TPS", avg);
+        telemetry.addData("Recovering?", recovering);
         telemetry.addData("Ready to Shoot?", readyToShoot());
-        telemetry.addData("Index Power", indexPower);
     }
 
     // ----- AUTO ACTIONS -----
