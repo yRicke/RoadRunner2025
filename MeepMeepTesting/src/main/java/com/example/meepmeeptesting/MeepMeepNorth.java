@@ -29,13 +29,13 @@ public class MeepMeepNorth {
         final double launchPositionY = -12;
 
         final double ppgPositionX = -12;
-        final double ppgPositionY = -56;
+        final double ppgPositionY = -52;
 
         final double pgpPositionX = 15;
-        final double pgpPositionY = -63;
+        final double pgpPositionY = -59;
 
         final double gppPositionX = 36;
-        final double gppPositionY = -63;
+        final double gppPositionY = -55;
 
         final double preY = -25;
 
@@ -62,47 +62,55 @@ public class MeepMeepNorth {
         // Trajetórias
 
         TrajectoryActionBuilder goToLaunch = blueBot.getDrive().actionBuilder(startPose)
-                .strafeToLinearHeading(launchVector, launchPositionHeading);
+                .strafeToLinearHeading(launchVector, launchPositionHeading)
+                ;
 
         TrajectoryActionBuilder goToPPG = blueBot.getDrive().actionBuilder(launchPose)
-                .strafeToLinearHeading(prePpgVector, modifPositionHeading)
-                .strafeTo(ppgVector)
+                .splineToLinearHeading(new Pose2d(prePpgVector, modifPositionHeading), Math.toRadians(270))
+                .splineToConstantHeading(ppgVector, Math.toRadians(270))
                 ;
 
         TrajectoryActionBuilder returnToLaunchByPPG = blueBot.getDrive().actionBuilder(ppgPose)
-                .strafeToLinearHeading(launchVector, launchPositionHeading)
+                .splineToLinearHeading(new Pose2d(launchVector, launchPositionHeading), Math.toRadians(90))
                 ;
 
         TrajectoryActionBuilder goToPGP = blueBot.getDrive().actionBuilder(launchPose)
-                .strafeToLinearHeading(prePgpVector, modifPositionHeading)
-                .strafeTo(pgpVector)
+                .splineToLinearHeading(new Pose2d(prePgpVector, modifPositionHeading), Math.toRadians(270))
+                .splineToConstantHeading(pgpVector, Math.toRadians(270))
                 ;
 
         TrajectoryActionBuilder returnToLaunchByPGP = blueBot.getDrive().actionBuilder(pgpPose)
-                .strafeToLinearHeading(launchVector, launchPositionHeading)
+                .splineToLinearHeading(new Pose2d(launchVector, launchPositionHeading), Math.toRadians(-180))
                 ;
 
         TrajectoryActionBuilder goToGPP = blueBot.getDrive().actionBuilder(launchPose)
-                .strafeToLinearHeading(preGppVector, modifPositionHeading)
-                .strafeTo(gppVector)
+                .splineToLinearHeading(new Pose2d(preGppVector, modifPositionHeading), Math.toRadians(270))
+                .splineToConstantHeading(gppVector, Math.toRadians(270))
                 ;
 
         TrajectoryActionBuilder returnToLaunchByGPP = blueBot.getDrive().actionBuilder(gppPose)
-                .strafeToLinearHeading(launchVector, launchPositionHeading)
+                .splineToLinearHeading(new Pose2d(launchVector, launchPositionHeading), Math.toRadians(-180))
                 ;
 
         TrajectoryActionBuilder conjunto = blueBot.getDrive().actionBuilder(startPose)
+                // Launch
                 .strafeToLinearHeading(launchVector, launchPositionHeading)
-                .strafeToLinearHeading(prePpgVector, modifPositionHeading)
-                .strafeTo(ppgVector)
-                .strafeToLinearHeading(launchVector, launchPositionHeading)
-                .strafeToLinearHeading(prePgpVector, modifPositionHeading)
-                .strafeTo(pgpVector)
-                .strafeToLinearHeading(launchVector, launchPositionHeading)
-                .strafeToLinearHeading(preGppVector, modifPositionHeading)
-                .strafeTo(gppVector)
-                .strafeToLinearHeading(launchVector, launchPositionHeading)
-                ;
+
+                // PPG
+                .splineToLinearHeading(new Pose2d(prePpgVector, modifPositionHeading), Math.toRadians(270))
+                .splineToConstantHeading(ppgVector, Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(launchVector, launchPositionHeading), Math.toRadians(90))
+
+                // PGP
+                .splineToLinearHeading(new Pose2d(prePgpVector, modifPositionHeading), Math.toRadians(270))
+                .splineToConstantHeading(pgpVector, Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(launchVector, launchPositionHeading), Math.toRadians(-180))
+
+                // GPP
+                .splineToLinearHeading(new Pose2d(preGppVector, modifPositionHeading), Math.toRadians(270))
+                .splineToConstantHeading(gppVector, Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(launchVector, launchPositionHeading), Math.toRadians(-180));
+
 
         blueBot.runAction(
                 conjunto.build()
