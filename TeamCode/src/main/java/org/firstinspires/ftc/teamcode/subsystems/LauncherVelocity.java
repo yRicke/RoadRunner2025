@@ -17,13 +17,12 @@ public class LauncherVelocity {
     private final DcMotorEx launcherMotorTwo;
     private final DcMotorEx indexMotor;
 
-    private final ElapsedTime indexTimer = new ElapsedTime();
     private final ElapsedTime recoveryTimer = new ElapsedTime();
 
     private final Telemetry telemetry;
 
     // ----- INDEX POWER -----
-    private double indexPower = 0.9;
+    private final double indexPower = 0.9;
 
     // ----- VELOCITY CONTROL -----
     private final double TPR = 28; // ticks por rev
@@ -57,46 +56,32 @@ public class LauncherVelocity {
         launcherMotorTwo.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
     }
 
-    public void run(
-            boolean on,
-            boolean shootRequest,
-            boolean normalPower,
-            boolean maxPower,
-            boolean minPower
-    ) {
+    public void run(boolean on, boolean shootRequest, boolean normalPower, boolean maxPower, boolean minPower) {
 
         // ===== PRESETS DE RPM =====
-        if (normalPower) {
-            rpmMultiplier = 0.48;
-        } else if (minPower) {
-            rpmMultiplier = 0.45;
-        } else if (maxPower) {
-            rpmMultiplier = 0.605;
-        }
+        launcherSetMode(normalPower, maxPower, minPower);
 
-        // Se não estiver recuperando, define target normal
-        if (!recovering) {
-            targetRPM = MAX_RPM * rpmMultiplier;
-            targetVelocityTPS = targetRPM * (TPR / 60.0);
-        }
+        // ===== SE NÃO RECUPERANDO, DEFINE O TARGET NORMAL =====
+        setNormalTPS();
 
-        // ===== ATIVA OU DESATIVA FLYWHEEL =====
-        if (on) onLauncherMotors();
-        else offLauncherMotors();
+        // ===== ATIVA OU DESATIVA O FLYWHEEL =====
+        setLauncherOn(on);
 
         // ===== CONTROLE DE DISPARO =====
-        if (shootRequest && readyToShoot()) {
+        shootControl(shootRequest);
 
-            // inicia recuperação pós-disparo
-            recovering = true;
-            recoveryTimer.reset();
+        // ===== SISTEMA DE RECUPERAÇÃO DE RPM =====
+        recoveryRPMsystem();
 
-            onIndexMotor();
+        // ===== GARANTE TARGET NORMAL SE NÃO ESTIVER RECUPERANDO =====
+        setNormalTPS();
 
-        } else {
-            offIndexMotor();
-        }
-
+    }
+    public void setLauncherOn(boolean on){
+        if (on) onLauncherMotors();
+        else offLauncherMotors();
+    }
+    public void recoveryRPMsystem() {
         // ===== SISTEMA DE RECUPERAÇÃO DE RPM =====
         if (recovering) {
             if (recoveryTimer.seconds() < RECOVERY_TIME) {
@@ -112,6 +97,38 @@ public class LauncherVelocity {
                 targetRPM = MAX_RPM * rpmMultiplier;
                 targetVelocityTPS = targetRPM * (TPR / 60.0);
             }
+        }
+    }
+    public void setNormalTPS(){
+        // Se não estiver recuperando, define target normal
+        if (!recovering) {
+            targetRPM = MAX_RPM * rpmMultiplier;
+            targetVelocityTPS = targetRPM * (TPR / 60.0);
+        }
+    }
+
+    public void shootControl(boolean shootRequest) {
+        // ===== CONTROLE DE DISPARO =====
+        if (shootRequest && readyToShoot()) {
+
+            // inicia recuperação pós-disparo
+            recovering = true;
+            recoveryTimer.reset();
+
+            onIndexMotor();
+
+        } else {
+            offIndexMotor();
+        }
+    }
+    public void launcherSetMode(boolean normalPower, boolean maxPower, boolean minPower) {
+        // ===== PRESETS DE RPM =====
+        if (normalPower) {
+            rpmMultiplier = 0.48;
+        } else if (minPower) {
+            rpmMultiplier = 0.45;
+        } else if (maxPower) {
+            rpmMultiplier = 0.605;
         }
     }
 
@@ -156,36 +173,71 @@ public class LauncherVelocity {
     }
 
     // ----- AUTO ACTIONS -----
-    public Action onAuto(double flyWheelPower) {
+    public Action onAuto(boolean normal, boolean max, boolean min) {
         return packet -> {
-            launcherMotorOne.setPower(flyWheelPower);
-            launcherMotorTwo.setPower(flyWheelPower);
-            packet.put("Flywheel", "Active");
+            run(true, false, normal, max, min);
+            packet.put("Launcher Avg TPS", (launcherMotorOne.getVelocity() + launcherMotorTwo.getVelocity()) / 2.0);
             return true;
         };
     }
 
-    public Action launch(double indexAutoPower, double indexAutoSeconds) {
+    public Action launchAuto(int shotIndex, int totalShots) {
+
         return new Action() {
+
             private boolean initialized = false;
+            private boolean dropDetected = false;
+            private boolean recovered = false;
+
+            private double baseVelocity = 0;
+            private final double DROP_THRESHOLD = 0.80;   // Queda grande → bola entrou
+            private final double RECOVER_THRESHOLD = 0.92; // Recuperou → bola saiu
 
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
+
+                double vel1 = launcherMotorOne.getVelocity();
+                double vel2 = launcherMotorTwo.getVelocity();
+                double avg = (vel1 + vel2) / 2.0;
+
                 if (!initialized) {
-                    indexTimer.reset();
-                    indexMotor.setPower(indexAutoPower);
+                    // mede a velocidade inicial sem bola
+                    baseVelocity = targetVelocityTPS;
+
+                    // liga index
+                    indexMotor.setPower(0.9);
+
                     initialized = true;
                 }
 
-                double elapsed = indexTimer.seconds();
-                packet.put("Index Timer", elapsed);
-
-                if (elapsed < indexAutoSeconds) {
-                    return true;
-                } else {
-                    indexMotor.setPower(0);
-                    return false;
+                // -------- DETECTA QUEDA (bola entrando) --------
+                if (!dropDetected && avg < baseVelocity * DROP_THRESHOLD) {
+                    dropDetected = true;
                 }
+
+                // -------- DETECTA RECUPERAÇÃO COMPLETA --------
+                if (dropDetected && avg >= baseVelocity * RECOVER_THRESHOLD) {
+                    recovered = true;
+                }
+
+                packet.put("AvgVel", avg);
+                packet.put("DropDetected", dropDetected);
+                packet.put("Recovered", recovered);
+
+                // -------- QUANDO A BOLA SAI --------
+                if (recovered) {
+
+                    indexMotor.setPower(0);
+
+                    // ---- Se essa é a última bola ----
+                    if (shotIndex == totalShots - 1) {
+                        return false; // ENCERRA O ACTION
+                    }
+
+                    return false; // termina esse cycle e o autonômo segue para o próximo
+                }
+
+                return true; // continua rodando
             }
         };
     }
