@@ -13,8 +13,8 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.LauncherVelocity;
 
-@Autonomous(name = "AutoBlueNorthVelocity", group = "Autonomous")
-public class AutoBlueNorthVelocity extends LinearOpMode {
+@Autonomous(name = "AutoBlueNorthMeczadaDosCria", group = "Autonomous")
+public class AutoBlueNorthMeczadaDosCria extends LinearOpMode {
 
     // --- POSIÇÕES BASE ---
     final double startPositionX = -62;
@@ -24,36 +24,46 @@ public class AutoBlueNorthVelocity extends LinearOpMode {
     final double launchPositionY = -12;
 
     final double ppgPositionX = -12;
-    final double ppgPositionY = -56;
+    final double ppgPositionY = -54;
 
-    final double pgpPositionX = 15;
-    final double pgpPositionY = -63;
+    final double pgpPositionX = 12.5;
 
-    final double gppPositionX = 36;
-    final double gppPositionY = -63;
+    final double pgpPositionY = -64;
+
+    final double gppPositionX = 35.5;
+    final double gppPositionY = -64;
 
     final double preY = -25;
+
+    final double gatePositionX = -4;
+    final double gatePositionY = -54.5;
+    final double pgpreturnPositionX = 20;
+    final double pgpreturnPositionY = -55;
 
     final double startPositionHeading = Math.toRadians(90);
     final double launchPositionHeading = Math.toRadians(45);
     final double modifPositionHeading = Math.toRadians(270);
+    final double returnPositionHeading = Math.toRadians(278);
 
     final Vector2d startVector = new Vector2d(startPositionX, startPositionY);
     final Vector2d launchVector = new Vector2d(launchPositionX, launchPositionY);
     final Vector2d ppgVector = new Vector2d(ppgPositionX, ppgPositionY);
     final Vector2d pgpVector = new Vector2d(pgpPositionX, pgpPositionY);
     final Vector2d gppVector = new Vector2d(gppPositionX, gppPositionY);
+    final Vector2d gateVector = new Vector2d(gatePositionX, gatePositionY);
+    final Vector2d pgpReturnVector = new Vector2d(pgpreturnPositionX, pgpreturnPositionY);
 
     final Vector2d prePpgVector = new Vector2d(ppgPositionX, preY);
     final Vector2d prePgpVector = new Vector2d(pgpPositionX, preY);
     final Vector2d preGppVector = new Vector2d(gppPositionX, preY);
+    final Vector2d preGateVector = new Vector2d(gatePositionX, gatePositionY+12);
 
     final Pose2d startPose = new Pose2d(startVector, startPositionHeading);
     final Pose2d launchPose = new Pose2d(launchVector, launchPositionHeading);
     final Pose2d ppgPose = new Pose2d(ppgVector, modifPositionHeading);
     final Pose2d pgpPose = new Pose2d(pgpVector, modifPositionHeading);
     final Pose2d gppPose = new Pose2d(gppVector, modifPositionHeading);
-
+    final Pose2d gatePose = new Pose2d(gateVector, modifPositionHeading);
     @Override
     public void runOpMode(){
 
@@ -69,24 +79,29 @@ public class AutoBlueNorthVelocity extends LinearOpMode {
 
         TrajectoryActionBuilder goToPPG = drive.actionBuilder(launchPose)
                 .strafeToLinearHeading(prePpgVector, modifPositionHeading)
-                .strafeTo(ppgVector)
+                .strafeToConstantHeading(ppgVector)
+                ;
+        TrajectoryActionBuilder goToGate = drive.actionBuilder(ppgPose)
+                .strafeToConstantHeading(preGateVector)
+                .strafeToConstantHeading(gateVector)
                 ;
 
-        TrajectoryActionBuilder returnToLaunchByPPG = drive.actionBuilder(ppgPose)
+        TrajectoryActionBuilder returnToLaunchByPPG = drive.actionBuilder(gatePose)
                 .strafeToLinearHeading(launchVector, launchPositionHeading)
                 ;
 
         TrajectoryActionBuilder goToPGP = drive.actionBuilder(launchPose)
                 .strafeToLinearHeading(prePgpVector, modifPositionHeading)
-                .strafeTo(pgpVector)
+                .strafeToConstantHeading(pgpVector)
                 ;
 
         TrajectoryActionBuilder returnToLaunchByPGP = drive.actionBuilder(pgpPose)
+                .strafeToLinearHeading(pgpReturnVector, returnPositionHeading)
                 .strafeToLinearHeading(launchVector, launchPositionHeading)
                 ;
 
         TrajectoryActionBuilder goToGPP = drive.actionBuilder(launchPose)
-                .strafeToLinearHeading(preGppVector, modifPositionHeading)
+                .strafeToSplineHeading(preGppVector, modifPositionHeading)
                 .strafeToConstantHeading(gppVector)
                 ;
 
@@ -103,16 +118,17 @@ public class AutoBlueNorthVelocity extends LinearOpMode {
                         launcher.onAuto(true, false, false),  // (normal, longe, perto) normal mode rodando SEMPRE
                         new SequentialAction(
                                 goToLaunch.build(),
-                                launcher.launch(1.7),
+                                launcher.launch(1.8),
                                 goToPPG.build(),
+                                goToGate.build(),
                                 returnToLaunchByPPG.build(),
-                                launcher.launch(1.5),
+                                launcher.launch(1.6),
                                 goToPGP.build(),
                                 returnToLaunchByPGP.build(),
-                                launcher.launch(1.5),
+                                launcher.launch(1.6),
                                 goToGPP.build(),
                                 returnToLaunchByGPP.build(),
-                                launcher.launch(1.5),
+                                launcher.launch(1.6),
                                 goToGPP.build()
                         )
                 )

@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import com.acmerobotics.roadrunner.Action;
 
+
 public class LauncherVelocity {
 
     private final DcMotorEx launcherMotorOne;
@@ -40,6 +41,8 @@ public class LauncherVelocity {
     private boolean recovering = false;
     private final double RECOVERY_TIME = 0.18; // 180ms
     private final double RECOVERY_DROP = 0.94; // 94% do alvo
+    private final ElapsedTime indexTimer = new ElapsedTime();
+    private boolean autoMode = false;
     public LauncherVelocity(HardwareMap hardwareMap, Telemetry telemetry) {
         this.telemetry = telemetry;
 
@@ -67,14 +70,13 @@ public class LauncherVelocity {
         // ===== ATIVA OU DESATIVA O FLYWHEEL =====
         setLauncherOn(on);
 
-        // ===== CONTROLE DE DISPARO =====
-        shootControl(shootRequest);
+
+        if (!autoMode) {
+            shootControl(shootRequest);
+        }
 
         // ===== SISTEMA DE RECUPERAÇÃO DE RPM =====
         recoveryRPMsystem();
-
-        // ===== GARANTE TARGET NORMAL SE NÃO ESTIVER RECUPERANDO =====
-        setNormalTPS();
 
     }
     public void setLauncherOn(boolean on){
@@ -94,8 +96,7 @@ public class LauncherVelocity {
 
                 // Terminou a recuperação
                 recovering = false;
-                targetRPM = MAX_RPM * rpmMultiplier;
-                targetVelocityTPS = targetRPM * (TPR / 60.0);
+                setNormalTPS();
             }
         }
     }
@@ -108,15 +109,11 @@ public class LauncherVelocity {
     }
 
     public void shootControl(boolean shootRequest) {
-        // ===== CONTROLE DE DISPARO =====
         if (shootRequest && readyToShoot()) {
-
-            // inicia recuperação pós-disparo
+            // Ativa recuperação
             recovering = true;
             recoveryTimer.reset();
-
             onIndexMotor();
-
         } else {
             offIndexMotor();
         }
@@ -173,6 +170,10 @@ public class LauncherVelocity {
     }
 
     // ----- AUTO ACTIONS -----
+
+    public void setAutoMode(boolean enable){
+        autoMode = enable;
+    }
     public Action onAuto(boolean normal, boolean max, boolean min) {
         return packet -> {
             run(true, false, normal, max, min);
@@ -181,63 +182,27 @@ public class LauncherVelocity {
         };
     }
 
-    public Action launchAuto(int shotIndex, int totalShots) {
-
+    public Action launch(double indexAutoSeconds) {
         return new Action() {
-
             private boolean initialized = false;
-            private boolean dropDetected = false;
-            private boolean recovered = false;
-
-            private double baseVelocity = 0;
-            private final double DROP_THRESHOLD = 0.80;   // Queda grande → bola entrou
-            private final double RECOVER_THRESHOLD = 0.92; // Recuperou → bola saiu
 
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
-
-                double vel1 = launcherMotorOne.getVelocity();
-                double vel2 = launcherMotorTwo.getVelocity();
-                double avg = (vel1 + vel2) / 2.0;
-
                 if (!initialized) {
-                    // mede a velocidade inicial sem bola
-                    baseVelocity = targetVelocityTPS;
-
-                    // liga index
-                    indexMotor.setPower(0.9);
-
+                    indexTimer.reset();
                     initialized = true;
                 }
 
-                // -------- DETECTA QUEDA (bola entrando) --------
-                if (!dropDetected && avg < baseVelocity * DROP_THRESHOLD) {
-                    dropDetected = true;
+                shootControl(true);
+                double elapsed = indexTimer.seconds();
+                packet.put("Index Timer", elapsed);
+
+                if (elapsed < indexAutoSeconds) {
+                    return true; // ainda rodando
+                } else {
+                    shootControl(false);
+                    return false;
                 }
-
-                // -------- DETECTA RECUPERAÇÃO COMPLETA --------
-                if (dropDetected && avg >= baseVelocity * RECOVER_THRESHOLD) {
-                    recovered = true;
-                }
-
-                packet.put("AvgVel", avg);
-                packet.put("DropDetected", dropDetected);
-                packet.put("Recovered", recovered);
-
-                // -------- QUANDO A BOLA SAI --------
-                if (recovered) {
-
-                    indexMotor.setPower(0);
-
-                    // ---- Se essa é a última bola ----
-                    if (shotIndex == totalShots - 1) {
-                        return false; // ENCERRA O ACTION
-                    }
-
-                    return false; // termina esse cycle e o autonômo segue para o próximo
-                }
-
-                return true; // continua rodando
             }
         };
     }

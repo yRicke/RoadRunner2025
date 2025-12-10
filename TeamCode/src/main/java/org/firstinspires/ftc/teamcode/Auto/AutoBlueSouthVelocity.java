@@ -13,14 +13,14 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.LauncherVelocity;
 
-@Autonomous(name = "AutoBlueNorthVelocity", group = "Autonomous")
-public class AutoBlueNorthVelocity extends LinearOpMode {
+@Autonomous(name = "AutoBlueSouthVelocity", group = "Autonomous")
+public class AutoBlueSouthVelocity extends LinearOpMode {
 
     // --- POSIÇÕES BASE ---
-    final double startPositionX = -62;
+    final double startPositionX = 62;
     final double startPositionY = -12;
 
-    final double launchPositionX = -12;
+    final double launchPositionX = 55;
     final double launchPositionY = -12;
 
     final double ppgPositionX = -12;
@@ -34,8 +34,8 @@ public class AutoBlueNorthVelocity extends LinearOpMode {
 
     final double preY = -25;
 
-    final double startPositionHeading = Math.toRadians(90);
-    final double launchPositionHeading = Math.toRadians(45);
+    final double startPositionHeading = Math.toRadians(0);
+    final double launchPositionHeading = Math.toRadians(21);
     final double modifPositionHeading = Math.toRadians(270);
 
     final Vector2d startVector = new Vector2d(startPositionX, startPositionY);
@@ -67,12 +67,12 @@ public class AutoBlueNorthVelocity extends LinearOpMode {
         TrajectoryActionBuilder goToLaunch = drive.actionBuilder(startPose)
                 .strafeToLinearHeading(launchVector, launchPositionHeading);
 
-        TrajectoryActionBuilder goToPPG = drive.actionBuilder(launchPose)
-                .strafeToLinearHeading(prePpgVector, modifPositionHeading)
-                .strafeTo(ppgVector)
+        TrajectoryActionBuilder goToGPP = drive.actionBuilder(launchPose)
+                .strafeToLinearHeading(preGppVector, modifPositionHeading)
+                .strafeTo(gppVector)
                 ;
 
-        TrajectoryActionBuilder returnToLaunchByPPG = drive.actionBuilder(ppgPose)
+        TrajectoryActionBuilder returnToLaunchByGPP = drive.actionBuilder(gppPose)
                 .strafeToLinearHeading(launchVector, launchPositionHeading)
                 ;
 
@@ -85,12 +85,12 @@ public class AutoBlueNorthVelocity extends LinearOpMode {
                 .strafeToLinearHeading(launchVector, launchPositionHeading)
                 ;
 
-        TrajectoryActionBuilder goToGPP = drive.actionBuilder(launchPose)
-                .strafeToLinearHeading(preGppVector, modifPositionHeading)
-                .strafeToConstantHeading(gppVector)
+        TrajectoryActionBuilder goToPPG = drive.actionBuilder(launchPose)
+                .strafeToLinearHeading(prePpgVector, modifPositionHeading)
+                .strafeTo(ppgVector)
                 ;
 
-        TrajectoryActionBuilder returnToLaunchByGPP = drive.actionBuilder(gppPose)
+        TrajectoryActionBuilder returnToLaunchByPPG = drive.actionBuilder(ppgPose)
                 .strafeToLinearHeading(launchVector, launchPositionHeading)
                 ;
 
@@ -100,20 +100,20 @@ public class AutoBlueNorthVelocity extends LinearOpMode {
         Actions.runBlocking(
                 new ParallelAction(
                         intake.onAuto(),
-                        launcher.onAuto(true, false, false),  // (normal, longe, perto) normal mode rodando SEMPRE
+                        launcher.onAuto(false, true, false),  // (normal, longe, perto) normal mode rodando SEMPRE
                         new SequentialAction(
                                 goToLaunch.build(),
                                 launcher.launch(1.7),
-                                goToPPG.build(),
-                                returnToLaunchByPPG.build(),
+                                goToGPP.build(),
+                                returnToLaunchByGPP.build(),
                                 launcher.launch(1.5),
                                 goToPGP.build(),
                                 returnToLaunchByPGP.build(),
                                 launcher.launch(1.5),
-                                goToGPP.build(),
-                                returnToLaunchByGPP.build(),
+                                goToPPG.build(),
+                                returnToLaunchByPPG.build(),
                                 launcher.launch(1.5),
-                                goToGPP.build()
+                                goToPGP.build()
                         )
                 )
         );
