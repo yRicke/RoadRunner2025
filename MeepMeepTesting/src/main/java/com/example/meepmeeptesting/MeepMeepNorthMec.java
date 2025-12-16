@@ -18,8 +18,8 @@ public class MeepMeepNorthMec {
         // ==========================
         RoadRunnerBotEntity blueBot = new DefaultBotBuilder(meepMeep)
                 .setColorScheme(new ColorSchemeBlueDark())
-                .setConstraints(0.000000000000001, 100, Math.toRadians(180), Math.toRadians(180), 15)
-                .setDimensions(0.00000000000001, 0.0000000000000001)
+                .setConstraints(100, 100, Math.toRadians(180), Math.toRadians(180), 15)
+                .setDimensions(17.783, 18)
                 .build();
 
         // --- POSIÇÕES BASE ---

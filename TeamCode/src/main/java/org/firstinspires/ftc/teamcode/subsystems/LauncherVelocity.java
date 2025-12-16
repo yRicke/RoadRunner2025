@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -35,14 +36,15 @@ public class LauncherVelocity {
     private double targetVelocityTPS = (targetRPM * TPR / 60.0);
 
     // ----- SHOOT CHECK -----
-    private final double SHOOT_THRESHOLD = 0.9; // 8 0% da velocidade alvo
+    private final double SHOOT_THRESHOLD = 0.9; // 90% da velocidade alvo
 
     // ----- RPM RECOVERY -----
     private boolean recovering = false;
     private final double RECOVERY_TIME = 0.18; // 180ms
-    private final double RECOVERY_DROP = 0.94; // 94% do alvo
+    private final double RECOVERY_DROP = 0.90; // 90% do alvo
     private final ElapsedTime indexTimer = new ElapsedTime();
     private boolean autoMode = false;
+    Servo rgb;
     public LauncherVelocity(HardwareMap hardwareMap, Telemetry telemetry) {
         this.telemetry = telemetry;
 
@@ -50,13 +52,16 @@ public class LauncherVelocity {
         launcherMotorTwo = hardwareMap.get(DcMotorEx.class, "launcher_motor_two");
 
         launcherMotorOne.setDirection(DcMotorSimple.Direction.REVERSE);
-        launcherMotorTwo.setDirection(DcMotorSimple.Direction.FORWARD);
+        launcherMotorTwo.setDirection(DcMotorSimple.Direction.REVERSE);
 
         indexMotor = hardwareMap.get(DcMotorEx.class, "index_motor");
         indexMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         launcherMotorOne.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         launcherMotorTwo.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+
+        rgb = hardwareMap.get(Servo.class, "rgb");
+        rgb.setPosition(0.28);
     }
 
     public void run(boolean on, boolean shootRequest, boolean normalPower, boolean maxPower, boolean minPower) {
@@ -121,9 +126,9 @@ public class LauncherVelocity {
     public void launcherSetMode(boolean normalPower, boolean maxPower, boolean minPower) {
         // ===== PRESETS DE RPM =====
         if (normalPower) {
-            rpmMultiplier = 0.48;
+            rpmMultiplier = 0.47;
         } else if (minPower) {
-            rpmMultiplier = 0.45;
+            rpmMultiplier = 0.44;
         } else if (maxPower) {
             rpmMultiplier = 0.605;
         }

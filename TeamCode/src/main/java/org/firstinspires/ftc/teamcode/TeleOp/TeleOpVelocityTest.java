@@ -22,7 +22,7 @@
             intake = new Intake(hardwareMap, telemetry);
             launcher = new LauncherVelocity(hardwareMap, telemetry);
             rgb = hardwareMap.get(Servo.class, "rgb");
-            rgb.setPosition(0.722);
+            rgb.setPosition(0.28);
 
             telemetry.addLine("Status: Inicializado");
             telemetry.update();
@@ -30,7 +30,6 @@
             waitForStart();
 
             while (opModeIsActive()) {
-                rgb.setPosition(0.278);
 
                 //Subsistemas
                 drive.run(gamepad1.left_stick_y, -gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.left_trigger > 0, gamepad2.right_stick_x);

@@ -69,10 +69,6 @@ public class Drive {
         telemetry.addData("Front Right Power", frontRightDrive.getPower());
         telemetry.addData("Back Left Power", backLeftDrive.getPower());
         telemetry.addData("Back Right Power", backRightDrive.getPower());
-        telemetry.addData("Front Left Position", frontLeftDrive.getCurrentPosition());
-        telemetry.addData("Front Right Position", frontRightDrive.getCurrentPosition());
-        telemetry.addData("Back Left Position", backLeftDrive.getCurrentPosition());
-        telemetry.addData("Back Right Position", backRightDrive.getCurrentPosition());
     }
 
     // Controle de precisão

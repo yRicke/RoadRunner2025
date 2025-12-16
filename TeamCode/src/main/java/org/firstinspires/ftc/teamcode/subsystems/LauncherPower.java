@@ -42,7 +42,7 @@ public class LauncherPower {
 
         launcherMotorOne = hardwareMap.get(DcMotorEx.class, "launcher_motor_one");
         launcherMotorTwo = hardwareMap.get(DcMotorEx.class, "launcher_motor_two");
-        launcherMotorOne.setDirection(DcMotorSimple.Direction.REVERSE);
+        launcherMotorOne.setDirection(DcMotorSimple.Direction.FORWARD);
         indexMotor = hardwareMap.get(DcMotorEx.class, "index_motor");
         indexMotor.setDirection(DcMotorSimple.Direction.FORWARD);
     }

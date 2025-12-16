@@ -24,7 +24,7 @@ public class AutoBlueNorthMeczadaDosCria extends LinearOpMode {
     final double launchPositionY = -12;
 
     final double ppgPositionX = -12;
-    final double ppgPositionY = -54;
+    final double ppgPositionY = -53;
 
     final double pgpPositionX = 12.5;
 
@@ -118,17 +118,17 @@ public class AutoBlueNorthMeczadaDosCria extends LinearOpMode {
                         launcher.onAuto(true, false, false),  // (normal, longe, perto) normal mode rodando SEMPRE
                         new SequentialAction(
                                 goToLaunch.build(),
-                                launcher.launch(1.8),
+                                launcher.launch(1.75),
                                 goToPPG.build(),
                                 goToGate.build(),
                                 returnToLaunchByPPG.build(),
-                                launcher.launch(1.6),
+                                launcher.launch(1.75),
                                 goToPGP.build(),
                                 returnToLaunchByPGP.build(),
-                                launcher.launch(1.6),
+                                launcher.launch(1.75),
                                 goToGPP.build(),
                                 returnToLaunchByGPP.build(),
-                                launcher.launch(1.6),
+                                launcher.launch(1.75),
                                 goToGPP.build()
                         )
                 )
