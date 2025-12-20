@@ -13,30 +13,30 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.LauncherVelocity;
 
-@Autonomous(name = "AutoBlueSouthVelocity", group = "Autonomous")
-public class AutoBlueSouthVelocity extends LinearOpMode {
+@Autonomous(name = "AutoRedSouthVelocity", group = "Autonomous")
+public class AutoRedSouthVelocity extends LinearOpMode {
 
     // --- POSIÇÕES BASE ---
     final double startPositionX = 62;
-    final double startPositionY = -12;
+    final double startPositionY = 12;
 
     final double launchPositionX = 55;
-    final double launchPositionY = -12;
+    final double launchPositionY = 12;
 
     final double ppgPositionX = -12;
-    final double ppgPositionY = -57;
+    final double ppgPositionY = 57;
 
     final double pgpPositionX = 15;
-    final double pgpPositionY = -64;
+    final double pgpPositionY = 64;
 
     final double gppPositionX = 36;
-    final double gppPositionY = -64;
+    final double gppPositionY = 64;
 
-    final double preY = -25;
+    final double preY = 25;
 
     final double startPositionHeading = Math.toRadians(0);
-    final double launchPositionHeading = Math.toRadians(24);
-    final double modifPositionHeading = Math.toRadians(270);
+    final double launchPositionHeading = Math.toRadians(-24);
+    final double modifPositionHeading = Math.toRadians(-270);
 
     final Vector2d startVector = new Vector2d(startPositionX, startPositionY);
     final Vector2d launchVector = new Vector2d(launchPositionX, launchPositionY);

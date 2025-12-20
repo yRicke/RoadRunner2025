@@ -24,7 +24,7 @@ public class LauncherVelocity {
     private final Telemetry telemetry;
 
     // ----- INDEX POWER -----
-    private final double indexPower = 0.9;
+    private final double indexPower = 1.0;
 
     // ----- VELOCITY CONTROL -----
     private final double TPR = 28; // ticks por rev
@@ -40,8 +40,8 @@ public class LauncherVelocity {
 
     // ----- RPM RECOVERY -----
     private boolean recovering = false;
-    private final double RECOVERY_TIME = 0.18; // 180ms
-    private final double RECOVERY_DROP = 0.90; // 90% do alvo
+    private final double RECOVERY_TIME = 0.2; // 200ms
+    private final double RECOVERY_DROP = 0.94; // 94% do alvo
     private final ElapsedTime indexTimer = new ElapsedTime();
     private boolean autoMode = false;
     Servo rgb;
@@ -126,11 +126,11 @@ public class LauncherVelocity {
     public void launcherSetMode(boolean normalPower, boolean maxPower, boolean minPower) {
         // ===== PRESETS DE RPM =====
         if (normalPower) {
-            rpmMultiplier = 0.47;
+            rpmMultiplier = 0.481;
         } else if (minPower) {
-            rpmMultiplier = 0.44;
+            rpmMultiplier = 0.442;
         } else if (maxPower) {
-            rpmMultiplier = 0.605;
+            rpmMultiplier = 0.609;
         }
     }
 

@@ -41,7 +41,7 @@ public class MeepMeepSouth {
         final double preY = -25;
 
         final double startPositionHeading = Math.toRadians(0);
-        final double launchPositionHeading = Math.toRadians(20);
+        final double launchPositionHeading = Math.toRadians(30);
         final double modifPositionHeading = Math.toRadians(270);
 
         final Vector2d startVector = new Vector2d(startPositionX, startPositionY);

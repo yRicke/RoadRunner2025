@@ -20,23 +20,23 @@ public class AutoBlueNorthMeczadaDosCria extends LinearOpMode {
     final double startPositionX = -62;
     final double startPositionY = -12;
 
-    final double launchPositionX = -12;
-    final double launchPositionY = -12;
+    final double launchPositionX = -18;
+    final double launchPositionY = -18;
 
     final double ppgPositionX = -12;
-    final double ppgPositionY = -53;
+    final double ppgPositionY = -54;
 
-    final double pgpPositionX = 12.5;
+    final double pgpPositionX = 14;
 
-    final double pgpPositionY = -64;
+    final double pgpPositionY = -63;
 
-    final double gppPositionX = 35.5;
-    final double gppPositionY = -64;
+    final double gppPositionX = 36;
+    final double gppPositionY = -63;
 
     final double preY = -25;
 
     final double gatePositionX = -4;
-    final double gatePositionY = -54.5;
+    final double gatePositionY = -55.5;
     final double pgpreturnPositionX = 20;
     final double pgpreturnPositionY = -55;
 
@@ -115,20 +115,20 @@ public class AutoBlueNorthMeczadaDosCria extends LinearOpMode {
         Actions.runBlocking(
                 new ParallelAction(
                         intake.onAuto(),
-                        launcher.onAuto(true, false, false),  // (normal, longe, perto) normal mode rodando SEMPRE
+                        launcher.onAuto(false, false, true),  // (normal, longe, perto) normal mode rodando SEMPRE
                         new SequentialAction(
                                 goToLaunch.build(),
-                                launcher.launch(1.75),
+                                launcher.launch(2.0),
                                 goToPPG.build(),
                                 goToGate.build(),
                                 returnToLaunchByPPG.build(),
-                                launcher.launch(1.75),
+                                launcher.launch(1.8),
                                 goToPGP.build(),
                                 returnToLaunchByPGP.build(),
-                                launcher.launch(1.75),
+                                launcher.launch(1.8),
                                 goToGPP.build(),
                                 returnToLaunchByGPP.build(),
-                                launcher.launch(1.75),
+                                launcher.launch(1.8),
                                 goToGPP.build()
                         )
                 )
