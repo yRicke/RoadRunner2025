@@ -4,32 +4,46 @@
     import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
     import com.qualcomm.robotcore.hardware.Servo;
 
-    import org.firstinspires.ftc.teamcode.subsystems.Drive;
+    import org.firstinspires.ftc.teamcode.subsystems.DriveField;
     import org.firstinspires.ftc.teamcode.subsystems.Intake;
     import org.firstinspires.ftc.teamcode.subsystems.LauncherVelocity;
 
     @TeleOp(name="TeleOpVelocityTest", group="TeleOpMode")
     public class TeleOpVelocityTest extends LinearOpMode {
 
-        private Drive drive;
+        private DriveField drive;
         private Intake intake;
         private LauncherVelocity launcher;
         Servo rgb;
 
         @Override
         public void runOpMode() {
-            drive = new Drive(hardwareMap, telemetry);
+            drive = new DriveField(hardwareMap, telemetry);
             intake = new Intake(hardwareMap, telemetry);
             launcher = new LauncherVelocity(hardwareMap, telemetry);
             rgb = hardwareMap.get(Servo.class, "rgb");
             rgb.setPosition(0.28);
 
             telemetry.addLine("Status: Inicializado");
+            telemetry.addLine("Field-centric: a orientação no START define a referência do campo.");
+            telemetry.addLine("Gamepad1 BACK: redefinir referência do campo.");
             telemetry.update();
 
             waitForStart();
 
+            if (isStopRequested()) {
+                return;
+            }
+
+            drive.resetYaw();
+            boolean backWasPressed = false;
+
             while (opModeIsActive()) {
+
+                if (gamepad1.back && !backWasPressed) {
+                    drive.resetYaw();
+                }
+                backWasPressed = gamepad1.back;
 
                 //Subsistemas
                 drive.run(gamepad1.left_stick_y, -gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.left_trigger > 0, gamepad2.right_stick_x);
