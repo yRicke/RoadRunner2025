@@ -31,6 +31,10 @@ public class DriveField extends Drive {
     @Override
     public void run(double axial, double lateral, double yaw,
                     boolean precisionMode, double correctionYaw) {
+        // Corrige os sinais de translação recebidos dos teleops.
+        axial = -axial;
+        lateral = -lateral;
+
         double heading = getHeadingRadians();
         double cos = Math.cos(heading);
         double sin = Math.sin(heading);
