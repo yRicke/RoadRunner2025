@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -20,7 +21,7 @@ public class Intake {
     public Intake(HardwareMap hardwareMap, Telemetry telemetry) {
         this.telemetry = telemetry;
         intakeMotor = hardwareMap.get(DcMotorEx.class, "intake_motor");
-        intakeMotor.setDirection(DcMotor.Direction.REVERSE);
+        intakeMotor.setDirection(DcMotor.Direction.FORWARD);
     }
 
     // Executa o intake com base no gatilho
