@@ -19,7 +19,7 @@ public class LauncherPIDado {
     public static volatile double MAX_RPM = 6000.0;
 
     // Ganhos do hub em ticks/s. São valores iniciais, que precisam de calibração.
-    public static volatile double P = 10.0;
+    public static volatile double P = 1000.0;
     public static volatile double I = 0.0;
     public static volatile double D = 0.0;
     public static volatile double F = 11.7;
