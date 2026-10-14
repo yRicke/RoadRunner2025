@@ -21,7 +21,7 @@ public class DriveField extends Drive {
         // Mesma montagem configurada em MecanumDrive: logo à direita, USB à frente.
         RevHubOrientationOnRobot orientation = new RevHubOrientationOnRobot(
                 RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD);
+                RevHubOrientationOnRobot.UsbFacingDirection.UP);
         if (!imu.initialize(new IMU.Parameters(orientation))) {
             throw new IllegalStateException("Não foi possível inicializar a IMU do DriveField.");
         }
