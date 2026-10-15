@@ -34,7 +34,7 @@ public class LauncherPIDado {
         this.telemetry = telemetry;
 
         launcherMotor = hardwareMap.get(DcMotorEx.class, "launcher_motor");
-        launcherMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        launcherMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         launcherMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         launcherMotor.setPower(0.0);
         launcherMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
