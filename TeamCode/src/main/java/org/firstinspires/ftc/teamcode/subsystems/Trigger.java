@@ -7,67 +7,68 @@ import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Trigger {
 
-    private DcMotor intakeMotorOne = null;
-    private DcMotor intakeMotorTwo = null;
-    private double intakeMaxPower = 1.0;
+    private Servo trigger = null;
 
     private Telemetry telemetry;
 
     // Construtor recebe o hardwareMap e telemetry do OpMode
     public Trigger(HardwareMap hardwareMap, Telemetry telemetry) {
         this.telemetry = telemetry;
-        intakeMotorOne = hardwareMap.get(DcMotor.class, "intake_motor_one");
-        intakeMotorOne.setDirection(DcMotor.Direction.REVERSE);
-        intakeMotorTwo = hardwareMap.get(DcMotor.class, "intake_motor_two");
-        intakeMotorTwo.setDirection(DcMotor.Direction.REVERSE);
+        trigger = hardwareMap.get(Servo.class, "trigger");
     }
 
     // Executa o intake com base no gatilho
-    public void run(boolean on, boolean eject) {
-        if (eject) {
-            eject();
-        }
-        else if (on){
-            onMotor();
+    public void run(boolean trigger_on) {
+        if (trigger_on) {
+            setTriggerOpen();
         }
         else{
-            offMotor();
+            setTriggerClosed();
         }
     }
 
-    public void onMotor(){
-        intakeMotorOne.setPower(intakeMaxPower);
-        intakeMotorTwo.setPower(intakeMaxPower);
+    public void setTriggerOpen(){
+        trigger.setPosition(1); // Abre o gatilho
     }
-    public void offMotor(){
-        intakeMotorOne.setPower(0);
-        intakeMotorTwo.setPower(0);
+    public void setTriggerClosed(){
+        trigger.setPosition(0); // Fecha o gatilho
     }
-    public void eject(){
-        intakeMotorOne.setPower(-intakeMaxPower);
-        intakeMotorTwo.setPower(-intakeMaxPower);
-    }
-
 
     // Telemetria
     public void sendTelemetry() {
-        telemetry.addData("Intake One Power", intakeMotorOne.getPower());
-        telemetry.addData("Intake Two Power", intakeMotorTwo.getPower());
+        double servoPosition = trigger.getPosition();
+        telemetry.addData("Trigger State", servoPosition == 0 ? "Closed" : "Open");
+        telemetry.addData("Trigger Position", servoPosition);
     }
 
-    public Action onAuto() {
+    public Action triggerOpen() {
         return new Action() {
             private boolean initialized = false;
 
             @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 if (!initialized) {
-                    intakeMotorOne.setPower(intakeMaxPower);
-                    intakeMotorTwo.setPower(intakeMaxPower);
+                    setTriggerOpen();
+                    initialized = true;
+                }
+                return false;
+            }
+        };
+    }
+    public Action triggerClosed() {
+        return new Action() {
+            private boolean initialized = false;
+
+            @Override
+            public boolean run(@NonNull TelemetryPacket packet) {
+                if (!initialized) {
+                    setTriggerClosed();
                     initialized = true;
                 }
                 return false;
