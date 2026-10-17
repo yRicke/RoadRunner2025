@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystems.FlywheelAdvanced;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Flywheel {
@@ -15,6 +16,7 @@ public class Flywheel {
     public void init(HardwareMap hwMap) {
         motor = hwMap.get(DcMotorEx.class, "launcher_motor");
         motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motor.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     public void setMotorPower(double power) {
