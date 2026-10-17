@@ -18,7 +18,7 @@ public class Trigger {
     private Telemetry telemetry;
 
     public final double TRIGGER_OPEN_POSITION = 1.0; // Posição aberta do gatilho
-    public final double TRIGGER_CLOSED_POSITION = 0.0; // Posição fech
+    public final double TRIGGER_CLOSED_POSITION = 0.0; // Posição fechada do gatilho
 
     // Construtor recebe o hardwareMap e telemetry do OpMode
     public Trigger(HardwareMap hardwareMap, Telemetry telemetry) {
@@ -41,23 +41,6 @@ public class Trigger {
     }
     public void setTriggerClosed(){
         trigger.setPosition(TRIGGER_CLOSED_POSITION); // Fecha o gatilho
-    }
-
-    public void runConfig(boolean increment, boolean decrement) {
-        if (increment) {
-            incrementTriggerPosition();
-        } else if (decrement) {
-            decrementTriggerPosition();
-        }
-    }
-    public void incrementTriggerPosition() {
-        double currentPosition = trigger.getPosition();
-        trigger.setPosition(Math.min(1.0, currentPosition + 0.1));
-    }
-
-    public void decrementTriggerPosition() {
-        double currentPosition = trigger.getPosition();
-        trigger.setPosition(Math.max(0.0, currentPosition - 0.1));
     }
 
     // Telemetria
