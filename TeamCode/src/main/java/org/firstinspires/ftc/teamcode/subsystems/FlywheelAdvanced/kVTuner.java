@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class kVTuner extends OpMode {
     Flywheel flywheel = new Flywheel();
 
-    public static double kV = 0.01;
-    public double kS = 0.17;
+    public static double kV = 0;
+    public double kS = 0;
     public double goalRPM = 1500;
 
     double[] increments = {0.000001, 0.00001, 0.0001, 0.001, 0.01};
