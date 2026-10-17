@@ -18,7 +18,7 @@ public class Trigger {
     private Telemetry telemetry;
 
     public final double TRIGGER_OPEN_POSITION = 1.0; // Posição aberta do gatilho
-    public final double TRIGGER_CLOSED_POSITION = 0.5; // Posição fechada do gatilho
+    public final double TRIGGER_CLOSED_POSITION = 0.0; // Posição fechada do gatilho
 
     // Construtor recebe o hardwareMap e telemetry do OpMode
     public Trigger(HardwareMap hardwareMap, Telemetry telemetry) {
