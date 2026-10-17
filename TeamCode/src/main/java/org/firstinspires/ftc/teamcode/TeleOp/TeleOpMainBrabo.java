@@ -12,7 +12,7 @@
 
     public class TeleOpMainBrabo extends LinearOpMode {
 
-        private static final double FLYWHEEL_TARGET_RPM = 2700;
+        private static final double FLYWHEEL_TARGET_RPM = 1267;
 
         private Drive drive;
         private Intake intake;
