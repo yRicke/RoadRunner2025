@@ -9,6 +9,7 @@
     import org.firstinspires.ftc.teamcode.subsystems.Intake;
     import org.firstinspires.ftc.teamcode.subsystems.LauncherPIDado;
     import org.firstinspires.ftc.teamcode.subsystems.LauncherPower;
+    import org.firstinspires.ftc.teamcode.subsystems.Trigger;
 
     @TeleOp(name="TeleOpMainBrabo", group="TeleOpMode")
 
@@ -17,12 +18,14 @@
         private Drive drive;
         private Intake intake;
         private LauncherPIDado launcher;
+        private Trigger trigger;
 
         @Override
         public void runOpMode() {
             drive = new Drive(hardwareMap, telemetry);
             intake = new Intake(hardwareMap, telemetry);
             launcher = new LauncherPIDado(hardwareMap, telemetry);
+            trigger = new Trigger(hardwareMap, telemetry);
 
             telemetry.addLine("Status: Inicializado");
             telemetry.update();
@@ -35,10 +38,12 @@
                 drive.run(gamepad1.left_stick_y, -gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.left_trigger > 0, gamepad2.right_stick_x);
                 intake.run(true, gamepad1.left_bumper);
                 launcher.run(2700);
+                trigger.run(gamepad1.right_bumper);
                 // Telemetry Organizado
                 drive.sendTelemetry();
                 intake.sendTelemetry();
                 launcher.sendTelemetry();
+                trigger.sendTelemetry();
                 telemetry.update();
             }
         }
