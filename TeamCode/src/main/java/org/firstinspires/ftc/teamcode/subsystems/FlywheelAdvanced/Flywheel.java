@@ -8,7 +8,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Flywheel {
-    private final DcMotorEx motor;
+    private final DcMotorEx motor_one;
+    private final DcMotorEx motor_two;
     private final Telemetry telemetry;
     private double targetRPM = 0.0;
 
@@ -19,19 +20,24 @@ public class Flywheel {
 
     public Flywheel(HardwareMap hardwareMap, Telemetry telemetry) {
         this.telemetry = telemetry;
-        motor = hardwareMap.get(DcMotorEx.class, "launcher_motor");
-        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        motor.setDirection(DcMotorSimple.Direction.REVERSE);
+        motor_one = hardwareMap.get(DcMotorEx.class, "launcher_motor_one");
+        motor_two = hardwareMap.get(DcMotorEx.class, "launcher_motor_two");
+        motor_one.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motor_two.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motor_one.setDirection(DcMotorSimple.Direction.REVERSE);
+        motor_two.setDirection(DcMotorSimple.Direction.FORWARD);
         stopMotors();
     }
 
     public void setMotorPower(double power) {
-        motor.setPower(power);
+        motor_one.setPower(power);
+        motor_two.setPower(power);
     }
 
     public void stopMotors() {
         targetRPM = 0.0;
-        motor.setPower(0);
+        motor_one.setPower(0);
+        motor_two.setPower(0);
     }
 
     /** Chame a cada iteração do TeleOp ou Auto. RPM zero ou inválido desliga o motor. */
@@ -51,7 +57,7 @@ public class Flywheel {
     }
 
     public double getTicksPerSec() {
-        return motor.getVelocity();
+        return motor_one.getVelocity();
     }
 
     public double getRPM() {
@@ -63,6 +69,6 @@ public class Flywheel {
         telemetry.addData("Flywheel RPM alvo", targetRPM);
         telemetry.addData("Flywheel RPM medido", currentRPM);
         telemetry.addData("Flywheel erro RPM", targetRPM - currentRPM);
-        telemetry.addData("Flywheel potência", motor.getPower());
+        telemetry.addData("Flywheel potência", motor_one.getPower());
     }
 }
