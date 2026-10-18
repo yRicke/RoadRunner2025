@@ -11,8 +11,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-import org.firstinspires.ftc.teamcode.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.LauncherVelocity;
+import org.firstinspires.ftc.teamcode.subsystems.Intake.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.Launcher.LauncherVelocity;
 
 @Autonomous(name = "AutoBlueNorthVelocity", group = "Autonomous")
 @Disabled

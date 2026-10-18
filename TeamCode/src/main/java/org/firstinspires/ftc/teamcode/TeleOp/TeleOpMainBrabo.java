@@ -3,10 +3,10 @@
     import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
     import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-    import org.firstinspires.ftc.teamcode.subsystems.Drive;
+    import org.firstinspires.ftc.teamcode.subsystems.Drive.Drive;
     import org.firstinspires.ftc.teamcode.subsystems.FlywheelAdvanced.Flywheel;
-    import org.firstinspires.ftc.teamcode.subsystems.Intake;
-    import org.firstinspires.ftc.teamcode.subsystems.Trigger;
+    import org.firstinspires.ftc.teamcode.subsystems.Intake.Intake;
+    import org.firstinspires.ftc.teamcode.subsystems.Trigger.Trigger;
 
     @TeleOp(name="TeleOpMainBrabo", group="TeleOpMode")
 

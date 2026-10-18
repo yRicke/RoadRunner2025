@@ -5,9 +5,9 @@
     import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
     import com.qualcomm.robotcore.hardware.Servo;
 
-    import org.firstinspires.ftc.teamcode.subsystems.Drive;
-    import org.firstinspires.ftc.teamcode.subsystems.Intake;
-    import org.firstinspires.ftc.teamcode.subsystems.LauncherPower;
+    import org.firstinspires.ftc.teamcode.subsystems.Drive.Drive;
+    import org.firstinspires.ftc.teamcode.subsystems.Intake.Intake;
+    import org.firstinspires.ftc.teamcode.subsystems.Launcher.LauncherPower;
 
     @TeleOp(name="TeleOpMain", group="TeleOpMode")
     @Disabled

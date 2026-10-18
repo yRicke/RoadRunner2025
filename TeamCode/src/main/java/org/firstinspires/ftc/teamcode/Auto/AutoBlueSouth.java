@@ -11,9 +11,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-import org.firstinspires.ftc.teamcode.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.LauncherPower;
-import org.firstinspires.ftc.teamcode.subsystems.Voltage;
+import org.firstinspires.ftc.teamcode.subsystems.Intake.Intake;
+import org.firstinspires.ftc.teamcode.subsystems.Launcher.LauncherPower;
+import org.firstinspires.ftc.teamcode.subsystems.Voltage.Voltage;
 
 /**
  * Autônomo para o lado Azul Sul (Blue South) do campo.

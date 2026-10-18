@@ -10,7 +10,9 @@ O controlador final de 1:03:25 já está na classe `Flywheel`.
 - Em `Flywheel`, confira `encoderCPM` (28 no exemplo) e `gearRatio` (3 no exemplo).
   A conversão copiada é `RPM = (ticks/s / encoderCPM × 60) / gearRatio`.
   Substitua-os pelos valores encontrados no seu mecanismo durante o ajuste.
-- Selecione `kSTuner`, `kVTuner` ou `kPTuner` no Driver Station e use INIT/START.
+- Selecione `kS Tuner`, `kV Tuner` ou `kP Tuner` no grupo `Flywheel` do Driver
+  Station e use INIT/START. As classes de ajuste ficam em `Tunning/`, e o
+  `Flywheel Test` fica em `Tests/`.
   Os tuners aplicam a potência continuamente depois do START, como no vídeo.
 
 ## Controles
