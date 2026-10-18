@@ -36,7 +36,7 @@
 
                     //Subsistemas
                     drive.run(gamepad1.left_stick_y, -gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.left_trigger > 0, gamepad2.right_stick_x);
-                    intake.run(true, gamepad1.left_bumper);
+                    intake.run(gamepad1.left_bumper);
                     flywheel.run(FLYWHEEL_TARGET_RPM);
                     trigger.run(gamepad1.right_bumper);
                     // Telemetry Organizado

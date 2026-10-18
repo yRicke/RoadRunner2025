@@ -15,7 +15,7 @@ public class IntakeTest extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
-            intake.run(true, gamepad1.left_bumper);
+            intake.run(gamepad1.left_bumper);
             intake.sendTelemetry();
             telemetry.update();
         }

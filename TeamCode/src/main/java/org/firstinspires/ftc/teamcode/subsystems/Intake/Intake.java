@@ -27,16 +27,12 @@ public class Intake {
         intakeMotorTwo.setDirection(DcMotor.Direction.FORWARD);
     }
 
-    // Executa o intake com base no gatilho
-    public void run(boolean on, boolean eject) {
+    // Recolhe continuamente e inverte os motores quando solicitado.
+    public void run(boolean eject) {
         if (eject) {
             eject();
-        }
-        else if (on){
+        } else {
             onMotor();
-        }
-        else{
-            offMotor();
         }
     }
 
