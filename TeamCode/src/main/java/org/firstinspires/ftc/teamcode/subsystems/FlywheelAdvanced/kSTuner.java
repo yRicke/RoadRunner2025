@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp
 public class kSTuner extends OpMode {
-    Flywheel flywheel = new Flywheel();
+    private Flywheel flywheel;
 
     public static double kS = 0.043;
 
@@ -14,7 +14,7 @@ public class kSTuner extends OpMode {
 
     @Override
     public void init() {
-        flywheel.init(hardwareMap);
+        flywheel = new Flywheel(hardwareMap, telemetry);
     }
 
     @Override

@@ -23,8 +23,7 @@
         public void runOpMode() {
             drive = new Drive(hardwareMap, telemetry);
             intake = new Intake(hardwareMap, telemetry);
-            flywheel = new Flywheel();
-            flywheel.init(hardwareMap);
+            flywheel = new Flywheel(hardwareMap, telemetry);
             trigger = new Trigger(hardwareMap, telemetry);
 
             telemetry.addLine("Status: Inicializado");
@@ -38,15 +37,12 @@
                     //Subsistemas
                     drive.run(gamepad1.left_stick_y, -gamepad1.left_stick_x, gamepad1.right_stick_x, gamepad1.left_trigger > 0, gamepad2.right_stick_x);
                     intake.run(true, gamepad1.left_bumper);
-                    flywheel.setMotorRPM(FLYWHEEL_TARGET_RPM);
+                    flywheel.run(FLYWHEEL_TARGET_RPM);
                     trigger.run(gamepad1.right_bumper);
                     // Telemetry Organizado
                     drive.sendTelemetry();
                     intake.sendTelemetry();
-                    double currentRPM = flywheel.getRPM();
-                    telemetry.addData("Flywheel RPM alvo", FLYWHEEL_TARGET_RPM);
-                    telemetry.addData("Flywheel RPM medido", currentRPM);
-                    telemetry.addData("Flywheel erro RPM", FLYWHEEL_TARGET_RPM - currentRPM);
+                    flywheel.sendTelemetry();
                     trigger.sendTelemetry();
                     telemetry.update();
                 }

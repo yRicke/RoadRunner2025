@@ -65,6 +65,14 @@ passo inicial é `0.01`, apesar do comentário `Start at 0.001` no código do v�
 
 [1:03:25 — Programming the Final Custom Motor Controller](https://www.youtube.com/watch?v=KVPdbWcAyUY&t=3805s)
 
-Inicialize uma vez com `flywheel.init(hardwareMap)`. No loop do TeleOp ou Auto,
-chame `flywheel.setMotorRPM(rpmDesejado)` a cada iteração. Para desligar, use
-`flywheel.stopMotors()`, que é o método de parada mostrado pelo autor.
+A API do subsistema foi adaptada ao padrão do projeto. Inicialize uma vez com
+`new Flywheel(hardwareMap, telemetry)`, dentro de `init()` do OpMode iterativo ou
+no início de `runOpMode()` do LinearOpMode, antes de `waitForStart()`.
+
+No loop do TeleOp ou Auto, chame `flywheel.run(rpmDesejado)` a cada iteração.
+Para desligar, use `flywheel.stopMotors()` ou `flywheel.run(0)`. RPM negativo ou
+não finito também desliga o motor.
+
+Chame `flywheel.sendTelemetry()` no loop para adicionar RPM alvo, RPM medido,
+erro de RPM e potência à telemetria. O OpMode continua responsável por chamar
+`telemetry.update()` depois de reunir os dados dos subsistemas.
