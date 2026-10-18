@@ -12,7 +12,7 @@ public class kSTuner extends OpMode {
     public static double kS = 0.043;
 
     double[] increments = {0.000001, 0.00001, 0.0001, 0.001, 0.01};
-    int incrementIdx = 4; // Start at 0.001
+    int incrementIdx = 4; // Passo inicial: 0.01
 
     @Override
     public void init() {

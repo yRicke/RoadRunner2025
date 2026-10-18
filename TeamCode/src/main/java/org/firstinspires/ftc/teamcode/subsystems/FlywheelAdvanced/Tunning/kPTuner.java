@@ -12,10 +12,10 @@ public class kPTuner extends OpMode {
     public static double kV = 0.000146;
     public double kS = 0.043;
     public double kP = 0.0021;
-    public double goalRPM = 1500;
+    public double goalRPM = 2800;
 
     double[] increments = {0.000001, 0.00001, 0.0001, 0.001, 0.01};
-    int incrementIdx = 4; // Start at 0.001
+    int incrementIdx = 4; // Passo inicial: 0.01
 
     @Override
     public void init() {
@@ -31,10 +31,10 @@ public class kPTuner extends OpMode {
         }
 
         if (gamepad1.a) {
-            goalRPM = 1500;
+            goalRPM = 2800;
         }
         else if (gamepad1.b) {
-            goalRPM = 800;
+            goalRPM = 2200;
         }
 
         double currentStep = increments[incrementIdx];
@@ -51,6 +51,7 @@ public class kPTuner extends OpMode {
 
         telemetry.addData("Step", "%.6f", currentStep);
         telemetry.addData("kP", "%.6f", kP);
+        telemetry.addData("Target RPM", goalRPM);
         telemetry.addData("Error", error);
         telemetry.addData("RPM", flywheel.getRPM());
     }
