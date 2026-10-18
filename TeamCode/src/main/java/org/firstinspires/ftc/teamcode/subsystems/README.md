@@ -14,9 +14,9 @@ Os grupos no Driver Station seguem o nome do subsistema.
 | `Trigger/` | `Trigger` | `Trigger` |
 | `Voltage/` | `Voltage` | `Voltage` |
 
-Os testes de localização e spline do Road Runner ficam em `Drive/Tests/`.
-Seu registrador e o tuner de feedback ficam em `Drive/Tunning/`; os OpModes
-registrados por `TuningOpModes` aparecem no grupo `Drive`.
+Os testes e ajustes nativos do Road Runner ficam no pacote `teamcode.tuning`,
+fora de `subsystems/`, e aparecem no grupo `quickstart` do Driver Station.
+A pasta `Drive/Tests/` reúne os testes próprios `DriveTest` e `DriveFieldTest`.
 
 Os testes automatizados JUnit continuam em `TeamCode/src/test/java`, seguindo
 a mesma hierarquia de subsistemas. Eles são executados no computador, enquanto

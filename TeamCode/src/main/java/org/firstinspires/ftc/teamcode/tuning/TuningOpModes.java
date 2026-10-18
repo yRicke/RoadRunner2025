@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems.Drive.Tunning;
+package org.firstinspires.ftc.teamcode.tuning;
 
 import androidx.annotation.NonNull;
 
@@ -41,8 +41,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
-import org.firstinspires.ftc.teamcode.subsystems.Drive.Tests.LocalizationTest;
-import org.firstinspires.ftc.teamcode.subsystems.Drive.Tests.SplineTest;
 import org.firstinspires.ftc.teamcode.OTOSLocalizer;
 import org.firstinspires.ftc.teamcode.PinpointLocalizer;
 import org.firstinspires.ftc.teamcode.TankDrive;
@@ -57,7 +55,7 @@ public final class TuningOpModes {
     // TODO: change this to TankDrive.class if you're using tank
     public static final Class<?> DRIVE_CLASS = MecanumDrive.class;
 
-    public static final String GROUP = "Drive";
+    public static final String GROUP = "quickstart";
     public static final boolean DISABLED = false;
 
     private TuningOpModes() {}
