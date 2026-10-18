@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.subsystems.AprilTagWebcam.Tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.teamcode.subsystems.AprilTagWebcam.AprilTagWebcam;
-
+@Disabled
 @Autonomous(name = "AprilTag ID20 Test", group = "AprilTagWebcam")
 public class ID20AprilTagWebcamTest extends OpMode {
 

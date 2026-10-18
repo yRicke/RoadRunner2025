@@ -1,9 +1,10 @@
 package org.firstinspires.ftc.teamcode.subsystems.Launcher.Tests;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.subsystems.Launcher.LauncherPower;
-
+@Disabled
 @TeleOp(name = "Launcher Power Test", group = "Launcher")
 public class LauncherTest extends LinearOpMode {
 
