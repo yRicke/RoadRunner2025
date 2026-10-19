@@ -55,20 +55,4 @@ public class Intake {
         telemetry.addData("Intake One Power", intakeMotorOne.getPower());
         telemetry.addData("Intake Two Power", intakeMotorTwo.getPower());
     }
-
-    public Action onAuto() {
-        return new Action() {
-            private boolean initialized = false;
-
-            @Override
-            public boolean run(@NonNull TelemetryPacket packet) {
-                if (!initialized) {
-                    intakeMotorOne.setPower(intakeMaxPower);
-                    intakeMotorTwo.setPower(intakeMaxPower);
-                    initialized = true;
-                }
-                return false;
-            }
-        };
-    }
 }
