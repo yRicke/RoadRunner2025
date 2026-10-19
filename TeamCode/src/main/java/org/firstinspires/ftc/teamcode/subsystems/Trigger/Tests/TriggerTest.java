@@ -17,7 +17,7 @@ public class TriggerTest extends LinearOpMode {
 
         waitForStart();
         while (opModeIsActive()) {
-            trigger.run(gamepad1.right_bumper);
+            trigger.run(gamepad1.right_trigger > 0);
             trigger.sendTelemetry();
             telemetry.update();
         }
